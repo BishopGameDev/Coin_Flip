@@ -2,24 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-
-<meta
-  name="viewport"
-  content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"
->
-
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#0f1115">
-
 <title>Coin Flip</title>
 
 <style>
 :root{
   color-scheme:dark;
-
   --bg:#0f1115;
   --panel:#171a20;
   --panel2:#1d2129;
-
   --text:#f5f7fb;
   --muted:#9ba3b0;
   --line:#2b313d;
@@ -30,24 +22,13 @@
   -webkit-tap-highlight-color:transparent;
 }
 
-html,
-body{
+html,body{
   width:100%;
   height:100%;
   margin:0;
-
   overflow:hidden;
-
-  background:#0f1115;
-
-  font-family:
-    Inter,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-
+  background:var(--bg);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   color:var(--text);
 }
 
@@ -58,14 +39,8 @@ body{
 
 .app{
   height:100dvh;
-
   display:grid;
-
-  grid-template-rows:
-    auto
-    1fr
-    auto;
-
+  grid-template-rows:auto 1fr auto;
   gap:12px;
 
   padding:
@@ -101,113 +76,65 @@ body{
 
 .mode{
   display:flex;
-
   gap:4px;
-
   padding:4px;
-
-  border:
-    1px solid
-    var(--line);
-
+  border:1px solid var(--line);
   border-radius:14px;
-
   background:var(--panel);
 }
 
 .mode button{
   border:0;
-
-  padding:
-    9px
-    12px;
-
+  padding:9px 12px;
   border-radius:10px;
-
   background:transparent;
-
   color:var(--muted);
-
   font-weight:750;
 }
 
 .mode button.active{
   color:var(--text);
-
   background:var(--panel2);
-
-  box-shadow:
-    0 3px 12px
-    rgba(0,0,0,.22);
+  box-shadow:0 3px 12px rgba(0,0,0,.22);
 }
 
 .stage{
   position:relative;
-
   min-height:0;
-
   display:flex;
   align-items:center;
   justify-content:center;
-
   overflow:hidden;
-
   perspective:1200px;
-
   touch-action:none;
   user-select:none;
 }
 
 .hint{
   position:absolute;
-
   top:4%;
   left:50%;
-
-  transform:
-    translateX(-50%);
-
-  width:
-    min(
-      92%,
-      460px
-    );
-
+  transform:translateX(-50%);
+  width:min(92%,460px);
   text-align:center;
-
   color:var(--muted);
-
   font-size:14px;
   line-height:1.4;
-
   pointer-events:none;
-
-  transition:
-    opacity
-    .2s;
+  transition:opacity .2s;
 }
 
 .score{
   position:absolute;
-
   top:13%;
   left:50%;
-
-  transform:
-    translateX(-50%);
-
+  transform:translateX(-50%);
   opacity:0;
-
   color:var(--muted);
-
   font-size:14px;
   font-weight:750;
-
   pointer-events:none;
-
-  transition:
-    opacity
-    .2s;
+  transition:opacity .2s;
 }
 
 .score.show{
@@ -216,16 +143,10 @@ body{
 
 .coin-wrap{
   position:relative;
-
   width:210px;
   height:210px;
-
-  transform-style:
-    preserve-3d;
-
-  will-change:
-    transform;
-
+  transform-style:preserve-3d;
+  will-change:transform;
   cursor:grab;
 }
 
@@ -235,55 +156,34 @@ body{
 
 .coin{
   position:relative;
-
   width:100%;
   height:100%;
-
   border-radius:50%;
-
-  transform-style:
-    preserve-3d;
-
-  will-change:
-    transform;
+  transform-style:preserve-3d;
+  will-change:transform;
 }
 
 .face,
 .edge{
   position:absolute;
-
   inset:0;
-
   border-radius:50%;
-
   backface-visibility:hidden;
 }
 
 .face{
   overflow:hidden;
-
-  border:
-    3px solid
-    #adb2ba;
-
+  border:3px solid #adb2ba;
   background:#c8ccd2;
 
   box-shadow:
-    inset
-    0 0 0 1px
-    rgba(255,255,255,.5),
-
-    inset
-    0 0 14px
-    rgba(0,0,0,.18),
-
-    0 18px 34px
-    rgba(0,0,0,.42);
+    inset 0 0 0 1px rgba(255,255,255,.5),
+    inset 0 0 14px rgba(0,0,0,.18),
+    0 18px 34px rgba(0,0,0,.42);
 }
 
 .heads{
-  transform:
-    translateZ(8px);
+  transform:translateZ(8px);
 }
 
 .tails{
@@ -294,68 +194,42 @@ body{
 
 .quarter-photo{
   display:block;
-
   width:100%;
   height:100%;
-
   object-fit:cover;
-
   border-radius:50%;
-
-  transform:
-    scale(1.015);
-
+  transform:scale(1.015);
   filter:
     contrast(1.05)
     brightness(.98);
-
   pointer-events:none;
   user-select:none;
 }
 
 .edge{
-  transform:
-    translateZ(0);
-
-  border:
-    8px solid
-    #8e949d;
+  transform:translateZ(0);
+  border:8px solid #8e949d;
 
   background:
     repeating-linear-gradient(
       90deg,
-
       #666c74 0 1px,
-
       #d8dbe0 1px 2px,
-
       #838992 2px 3px,
-
       #c3c7cd 3px 4px
     );
 
   box-shadow:
-    inset
-    0 0 8px
-    rgba(0,0,0,.32);
+    inset 0 0 8px rgba(0,0,0,.32);
 }
 
 .shadow{
   position:absolute;
-
   left:50%;
-  top:
-    calc(
-      50% +
-      135px
-    );
-
+  top:calc(50% + 135px);
   width:150px;
   height:34px;
-
-  transform:
-    translateX(-50%);
-
+  transform:translateX(-50%);
   border-radius:50%;
 
   background:
@@ -365,30 +239,21 @@ body{
       rgba(0,0,0,0) 70%
     );
 
-  filter:
-    blur(6px);
-
+  filter:blur(6px);
   opacity:.72;
-
   pointer-events:none;
-
-  will-change:
-    transform,
-    opacity;
+  will-change:transform,opacity;
 }
 
 .result{
   position:absolute;
-
   left:50%;
   bottom:7%;
-
   transform:
     translateX(-50%)
     translateY(8px);
 
   opacity:0;
-
   text-align:center;
 
   font-size:28px;
@@ -412,30 +277,22 @@ body{
 
 .result small{
   display:block;
-
   margin-top:5px;
-
   color:var(--muted);
-
   font-size:13px;
   font-weight:700;
 }
 
 .controls{
   display:flex;
-
   justify-content:center;
   align-items:center;
-
   gap:9px;
 }
 
 .pill{
   min-width:0;
-
-  padding:
-    13px
-    15px;
+  padding:13px 15px;
 
   border:
     1px solid
@@ -444,7 +301,6 @@ body{
   border-radius:16px;
 
   background:var(--panel);
-
   color:var(--text);
 
   font-size:14px;
@@ -456,19 +312,14 @@ body{
 }
 
 .pill:active{
-  transform:
-    scale(.97);
+  transform:scale(.97);
 }
 
 .status{
   min-height:17px;
-
   margin-top:6px;
-
   text-align:center;
-
   color:var(--muted);
-
   font-size:12px;
 }
 
@@ -480,11 +331,7 @@ body{
   }
 
   .shadow{
-    top:
-      calc(
-        50% +
-        107px
-      );
+    top:calc(50% + 107px);
   }
 
   .result{
@@ -494,6 +341,7 @@ body{
   .hint{
     top:1%;
   }
+
 }
 </style>
 </head>
@@ -527,6 +375,7 @@ body{
 
   </header>
 
+
   <main
     class="stage"
     id="stage"
@@ -551,6 +400,7 @@ body{
       id="shadow"
     ></div>
 
+
     <div
       class="coin-wrap"
       id="coinWrap"
@@ -561,9 +411,7 @@ body{
         id="coin"
       >
 
-        <div
-          class="face heads"
-        >
+        <div class="face heads">
 
           <img
             class="quarter-photo"
@@ -574,9 +422,8 @@ body{
 
         </div>
 
-        <div
-          class="face tails"
-        >
+
+        <div class="face tails">
 
           <img
             class="quarter-photo"
@@ -587,11 +434,13 @@ body{
 
         </div>
 
+
         <div class="edge"></div>
 
       </div>
 
     </div>
+
 
     <div
       class="result"
@@ -599,6 +448,7 @@ body{
     ></div>
 
   </main>
+
 
   <footer>
 
@@ -627,6 +477,7 @@ body{
 
     </div>
 
+
     <div
       class="status"
       id="status"
@@ -638,8 +489,12 @@ body{
 
 </div>
 
+
 <script>
 (() => {
+
+'use strict';
+
 
 const stage =
   document.getElementById(
@@ -723,10 +578,6 @@ let currentFace =
   'heads';
 
 
-/*
-  Coin stays where it lands.
-*/
-
 let coinPos = {
   x:0,
   y:0
@@ -740,36 +591,25 @@ let series = {
 
 
 /*
-  MOTION SENSOR STATE
-*/
-
-let motionEnabled =
-  false;
-
-let motionSamples =
-  0;
-
-let lastShake =
-  0;
-
-let lastMagnitude =
-  9.81;
-
-let motionTimer =
-  null;
-
-
-/*
-  CRYPTO RANDOMNESS
+  SECURE RANDOMNESS
 */
 
 function secureBit(){
-  const a = new Uint32Array(1);
-  crypto.getRandomValues(a);
 
-  return (a[0] & 1) === 0
-    ? 'heads'
-    : 'tails';
+  const a =
+    new Uint32Array(1);
+
+  crypto.getRandomValues(
+    a
+  );
+
+
+  return (
+    (a[0] & 1) === 0
+      ? 'heads'
+      : 'tails'
+  );
+
 }
 
 
@@ -781,7 +621,11 @@ function secureFloat(
   const a =
     new Uint32Array(1);
 
-  crypto.getRandomValues(a);
+
+  crypto.getRandomValues(
+    a
+  );
+
 
   return (
     min +
@@ -829,7 +673,7 @@ function wait(ms){
 
 
 /*
-  AUDIO
+  SOUND + HAPTICS
 */
 
 function ensureAudio(){
@@ -843,6 +687,7 @@ function ensureAudio(){
       )();
 
   }
+
 
   if(
     audioCtx.state ===
@@ -868,29 +713,37 @@ function tone(
     return;
   }
 
+
   ensureAudio();
+
 
   const start =
     audioCtx.currentTime +
     delay;
 
+
   const oscillator =
     audioCtx.createOscillator();
+
 
   const volume =
     audioCtx.createGain();
 
+
   const filter =
     audioCtx.createBiquadFilter();
 
+
   oscillator.type =
     type;
+
 
   oscillator.frequency
     .setValueAtTime(
       frequency,
       start
     );
+
 
   oscillator.frequency
     .exponentialRampToValueAtTime(
@@ -901,26 +754,35 @@ function tone(
       start + duration
     );
 
+
   filter.type =
     'bandpass';
+
 
   filter.frequency.value =
     frequency;
 
+
   filter.Q.value =
     4.2;
 
+
   volume.gain
     .setValueAtTime(
-      gain,
+      Math.max(
+        .0001,
+        gain
+      ),
       start
     );
+
 
   volume.gain
     .exponentialRampToValueAtTime(
       .0001,
       start + duration
     );
+
 
   oscillator
     .connect(filter)
@@ -929,9 +791,11 @@ function tone(
       audioCtx.destination
     );
 
+
   oscillator.start(
     start
   );
+
 
   oscillator.stop(
     start +
@@ -952,23 +816,33 @@ function noiseTick(
     return;
   }
 
+
   ensureAudio();
+
 
   const sampleRate =
     audioCtx.sampleRate;
 
+
   const buffer =
     audioCtx.createBuffer(
       1,
-      Math.floor(
-        sampleRate *
-        duration
+      Math.max(
+        1,
+        Math.floor(
+          sampleRate *
+          duration
+        )
       ),
       sampleRate
     );
 
+
   const data =
-    buffer.getChannelData(0);
+    buffer.getChannelData(
+      0
+    );
+
 
   for(
     let i=0;
@@ -989,29 +863,37 @@ function noiseTick(
 
   }
 
+
   const source =
     audioCtx
       .createBufferSource();
+
 
   const highpass =
     audioCtx
       .createBiquadFilter();
 
+
   const volume =
     audioCtx
       .createGain();
 
+
   source.buffer =
     buffer;
+
 
   highpass.type =
     'highpass';
 
+
   highpass.frequency.value =
     1700;
 
+
   volume.gain.value =
     gain;
+
 
   source
     .connect(highpass)
@@ -1019,6 +901,7 @@ function noiseTick(
     .connect(
       audioCtx.destination
     );
+
 
   source.start(
     audioCtx.currentTime +
@@ -1034,6 +917,7 @@ function launchSound(){
     .018,
     .012
   );
+
 
   tone(
     170,
@@ -1056,17 +940,20 @@ function clink(
       1.08
     );
 
+
   noiseTick(
     .028,
     .027 *
     intensity
   );
 
+
   tone(
     520*pitch,
     .11,
     .040*intensity
   );
+
 
   tone(
     970*pitch,
@@ -1075,12 +962,14 @@ function clink(
     .006
   );
 
+
   tone(
     1480*pitch,
     .055,
     .016*intensity,
     .012
   );
+
 
   tone(
     275*pitch,
@@ -1137,6 +1026,7 @@ function showResult(
         : ''
     }`;
 
+
   resultEl
     .classList
     .add(
@@ -1162,8 +1052,10 @@ function setMode(
     return;
   }
 
+
   mode =
     newMode;
+
 
   singleBtn
     .classList
@@ -1173,6 +1065,7 @@ function setMode(
       'single'
     );
 
+
   bo3Btn
     .classList
     .toggle(
@@ -1180,6 +1073,7 @@ function setMode(
       mode ===
       'bo3'
     );
+
 
   scoreEl
     .classList
@@ -1189,10 +1083,12 @@ function setMode(
       'bo3'
     );
 
+
   series = {
     heads:0,
     tails:0
   };
+
 
   updateScore();
 
@@ -1202,22 +1098,27 @@ function setMode(
 
 
 /*
-  POSITION HELPERS
+  COIN POSITION
 */
 
 function stageLimits(){
 
   const stageRect =
-    stage.getBoundingClientRect();
+    stage
+      .getBoundingClientRect();
+
 
   const coinRect =
-    coinWrap.getBoundingClientRect();
+    coinWrap
+      .getBoundingClientRect();
+
 
   const radius =
     Math.min(
       coinRect.width,
       coinRect.height
     ) / 2;
+
 
   return {
 
@@ -1234,7 +1135,7 @@ function stageLimits(){
         20,
         stageRect.height/2 -
         radius -
-        42
+        48
       )
 
   };
@@ -1251,6 +1152,7 @@ function setRestingPosition(){
       0
     )`;
 
+
   coin.style.transform =
     `rotateY(${
       currentFace ===
@@ -1258,6 +1160,7 @@ function setRestingPosition(){
         ? 180
         : 0
     }deg)`;
+
 
   shadow.style.transform =
     `translate(
@@ -1267,6 +1170,7 @@ function setRestingPosition(){
       ),
       ${coinPos.y}px
     )`;
+
 
   shadow.style.opacity =
     '.72';
@@ -1280,7 +1184,8 @@ function cancelAnimations(){
     coinWrap,
     coin,
     shadow
-  ].forEach(
+  ]
+  .forEach(
     element => {
 
       element
@@ -1297,7 +1202,54 @@ function cancelAnimations(){
 
 
 /*
-  FLIP PHYSICS
+  ERROR FAILSAFE
+
+  This prevents another bug from
+  leaving flipping=true forever.
+*/
+
+function unlockAfterError(
+  error
+){
+
+  console.error(
+    error
+  );
+
+
+  flipping =
+    false;
+
+
+  hint.style.opacity =
+    '1';
+
+
+  coinWrap
+    .classList
+    .remove(
+      'dragging'
+    );
+
+
+  try{
+
+    cancelAnimations();
+
+    setRestingPosition();
+
+  }
+  catch(_){}
+
+
+  statusEl.textContent =
+    'Recovered from an animation error · try again';
+
+}
+
+
+/*
+  PHYSICAL FLIP
 */
 
 async function doFlip(
@@ -1308,1131 +1260,1135 @@ async function doFlip(
     return;
   }
 
+
   flipping =
     true;
 
+
   clearResult();
+
 
   hint.style.opacity =
     '.15';
 
-  cancelAnimations();
 
-  setRestingPosition();
+  try{
 
+    cancelAnimations();
 
-  /*
-    OUTCOME HAPPENS FIRST.
-
-    Gesture physics cannot
-    affect heads or tails.
-  */
-
-  const outcome =
-    secureBit();
+    setRestingPosition();
 
 
-  let vx =
-    Number(
-      gesture.vx || 0
+    /*
+      CRYPTO CHOOSES HEADS/TAILS
+      BEFORE MOTION IS CALCULATED.
+    */
+
+    const outcome =
+      secureBit();
+
+
+    let vx =
+      Number(
+        gesture.vx || 0
+      );
+
+
+    let vy =
+      Number(
+        gesture.vy || 0
+      );
+
+
+    /*
+      Button / fallback flips get
+      a natural random direction.
+    */
+
+    if(
+      Math.abs(vx) < .01 &&
+      Math.abs(vy) < .01
+    ){
+
+      const angle =
+        secureFloat(
+          0,
+          Math.PI*2
+        );
+
+
+      vx =
+        Math.cos(
+          angle
+        );
+
+
+      vy =
+        Math.sin(
+          angle
+        );
+
+    }
+
+
+    const velocity =
+      Math.hypot(
+        vx,
+        vy
+      );
+
+
+    const dirX =
+      vx /
+      Math.max(
+        velocity,
+        .001
+      );
+
+
+    const dirY =
+      vy /
+      Math.max(
+        velocity,
+        .001
+      );
+
+
+    const strength =
+      clamp(
+        Number(
+          gesture.strength ||
+          1
+        ),
+        .65,
+        2.4
+      );
+
+
+    const limits =
+      stageLimits();
+
+
+    const upwardAmount =
+      clamp(
+        -dirY,
+        0,
+        1
+      );
+
+
+    const downwardAmount =
+      clamp(
+        dirY,
+        0,
+        1
+      );
+
+
+    const sidewaysAmount =
+      Math.abs(
+        dirX
+      );
+
+
+    let travelX =
+      dirX *
+      (
+        65 +
+        strength*95
+      );
+
+
+    let travelY =
+      dirY *
+      (
+        35 +
+        strength*48
+      );
+
+
+    /*
+      SIDEWAYS
+
+      Wide horizontal travel,
+      smaller hop.
+    */
+
+    if(
+      sidewaysAmount > .72 &&
+      Math.abs(dirY) < .55
+    ){
+
+      travelX =
+        dirX *
+        (
+          105 +
+          strength*115
+        );
+
+
+      travelY =
+        dirY *
+        (
+          22 +
+          strength*25
+        );
+
+    }
+
+
+    /*
+      DOWNWARD
+
+      Preserve the dive.
+    */
+
+    if(
+      downwardAmount > .58
+    ){
+
+      travelY =
+        dirY *
+        (
+          70 +
+          strength*75
+        );
+
+    }
+
+
+    /*
+      UPWARD
+
+      Traditional high toss.
+    */
+
+    if(
+      upwardAmount > .58
+    ){
+
+      travelY =
+        dirY *
+        (
+          75 +
+          strength*90
+        );
+
+    }
+
+
+    const startX =
+      coinPos.x;
+
+
+    const startY =
+      coinPos.y;
+
+
+    const targetX =
+      clamp(
+        startX +
+        travelX,
+        -limits.x,
+        limits.x
+      );
+
+
+    const targetY =
+      clamp(
+        startY +
+        travelY,
+        -limits.y,
+        limits.y
+      );
+
+
+    /*
+      SPIN
+    */
+
+    const contactBias =
+      clamp(
+        Number(
+          gesture.spinBias ||
+          0
+        ),
+        -1,
+        1
+      );
+
+
+    let spinDirection =
+      Math.sign(
+        vx*.8 +
+        contactBias
+      );
+
+
+    if(
+      spinDirection === 0
+    ){
+
+      spinDirection =
+        secureFloat(
+          0,
+          1
+        ) < .5
+          ? -1
+          : 1;
+
+    }
+
+
+    const startRotation =
+      currentFace ===
+      'tails'
+        ? 180
+        : 0;
+
+
+    const turns =
+      Math.round(
+        secureFloat(
+          4,
+          7
+        ) +
+        strength*1.7
+      );
+
+
+    const faceChange =
+      outcome ===
+      currentFace
+        ? 0
+        : 180;
+
+
+    const endRotation =
+      startRotation +
+      spinDirection *
+      (
+        turns*360 +
+        faceChange
+      );
+
+
+    const duration =
+      clamp(
+        980 +
+        strength*260 +
+        secureFloat(
+          -100,
+          130
+        ),
+        1000,
+        1700
+      );
+
+
+    let path;
+
+
+    /*
+      DOWNWARD PATH
+
+      Dive → rebound → settle.
+    */
+
+    if(
+      downwardAmount > .58
+    ){
+
+      const diveX =
+        startX +
+        (
+          targetX -
+          startX
+        )*.66;
+
+
+      const diveY =
+        clamp(
+          startY +
+          (
+            75 +
+            strength*80
+          ),
+          -limits.y,
+          limits.y
+        );
+
+
+      const reboundY =
+        clamp(
+          targetY -
+          (
+            28 +
+            strength*25
+          ),
+          -limits.y,
+          limits.y
+        );
+
+
+      path = [
+
+        {
+          transform:
+            `translate3d(
+              ${startX}px,
+              ${startY}px,
+              0
+            )`,
+          offset:0
+        },
+
+        {
+          transform:
+            `translate3d(
+              ${diveX}px,
+              ${diveY}px,
+              0
+            )`,
+          offset:.38
+        },
+
+        {
+          transform:
+            `translate3d(
+              ${targetX}px,
+              ${reboundY}px,
+              0
+            )`,
+          offset:.68
+        },
+
+        {
+          transform:
+            `translate3d(
+              ${targetX}px,
+              ${targetY}px,
+              0
+            )`,
+          offset:1
+        }
+
+      ];
+
+    }
+
+
+    /*
+      SIDEWAYS PATH
+    */
+
+    else if(
+      sidewaysAmount > .72 &&
+      Math.abs(dirY) < .55
+    ){
+
+      const hop =
+        38 +
+        strength*28;
+
+
+      const midX =
+        startX +
+        (
+          targetX -
+          startX
+        )*.53;
+
+
+      const midY =
+        clamp(
+          startY -
+          hop,
+          -limits.y,
+          limits.y
+        );
+
+
+      path = [
+
+        {
+          transform:
+            `translate3d(
+              ${startX}px,
+              ${startY}px,
+              0
+            )`,
+          offset:0
+        },
+
+        {
+          transform:
+            `translate3d(
+              ${midX}px,
+              ${midY}px,
+              0
+            )`,
+          offset:.47
+        },
+
+        {
+          transform:
+            `translate3d(
+              ${targetX}px,
+              ${targetY}px,
+              0
+            )`,
+          offset:1
+        }
+
+      ];
+
+    }
+
+
+    /*
+      UPWARD PATH
+    */
+
+    else if(
+      upwardAmount > .58
+    ){
+
+      const rise =
+        125 +
+        strength*85;
+
+
+      const apexX =
+        startX +
+        (
+          targetX -
+          startX
+        )*.42;
+
+
+      const apexY =
+        clamp(
+          startY -
+          rise,
+          -limits.y,
+          limits.y
+        );
+
+
+      path = [
+
+        {
+          transform:
+            `translate3d(
+              ${startX}px,
+              ${startY}px,
+              0
+            )`,
+          offset:0
+        },
+
+        {
+          transform:
+            `translate3d(
+              ${apexX}px,
+              ${apexY}px,
+              0
+            )`,
+          offset:.46
+        },
+
+        {
+          transform:
+            `translate3d(
+              ${targetX}px,
+              ${targetY}px,
+              0
+            )`,
+          offset:1
+        }
+
+      ];
+
+    }
+
+
+    /*
+      DIAGONAL PATH
+
+      Follows gesture instead of
+      forcing a vertical arc.
+    */
+
+    else{
+
+      const perpendicularX =
+        -dirY;
+
+
+      const perpendicularY =
+        dirX;
+
+
+      const arcStrength =
+        secureFloat(
+          22,
+          46
+        ) *
+        (
+          .8 +
+          strength*.25
+        );
+
+
+      const midX =
+        startX +
+        (
+          targetX -
+          startX
+        )*.52 +
+        perpendicularX *
+        arcStrength;
+
+
+      const midY =
+        startY +
+        (
+          targetY -
+          startY
+        )*.52 +
+        perpendicularY *
+        arcStrength;
+
+
+      path = [
+
+        {
+          transform:
+            `translate3d(
+              ${startX}px,
+              ${startY}px,
+              0
+            )`,
+          offset:0
+        },
+
+        {
+          transform:
+            `translate3d(
+              ${midX}px,
+              ${midY}px,
+              0
+            )`,
+          offset:.5
+        },
+
+        {
+          transform:
+            `translate3d(
+              ${targetX}px,
+              ${targetY}px,
+              0
+            )`,
+          offset:1
+        }
+
+      ];
+
+    }
+
+
+    coinWrap.animate(
+      path,
+      {
+        duration,
+        easing:
+          'cubic-bezier(.16,.68,.22,1)',
+        fill:'forwards'
+      }
     );
 
-  let vy =
-    Number(
-      gesture.vy || 0
+
+    const wobbleX =
+      secureFloat(
+        -48,
+        48
+      );
+
+
+    const wobbleZ =
+      clamp(
+        dirX*36 +
+        contactBias*18 +
+        secureFloat(
+          -8,
+          8
+        ),
+        -55,
+        55
+      );
+
+
+    coin.animate(
+      [
+
+        {
+          transform:
+            `rotateY(
+              ${startRotation}deg
+            )
+            rotateX(0deg)
+            rotateZ(0deg)`,
+          offset:0
+        },
+
+        {
+          transform:
+            `rotateY(
+              ${
+                startRotation +
+                (
+                  endRotation -
+                  startRotation
+                )*.48
+              }deg
+            )
+            rotateX(
+              ${wobbleX}deg
+            )
+            rotateZ(
+              ${wobbleZ}deg
+            )`,
+          offset:.48
+        },
+
+        {
+          transform:
+            `rotateY(
+              ${
+                startRotation +
+                (
+                  endRotation -
+                  startRotation
+                )*.90
+              }deg
+            )
+            rotateX(
+              ${wobbleX*.16}deg
+            )
+            rotateZ(
+              ${wobbleZ*.12}deg
+            )`,
+          offset:.89
+        },
+
+        {
+          transform:
+            `rotateY(
+              ${endRotation}deg
+            )
+            rotateX(0deg)
+            rotateZ(0deg)`,
+          offset:1
+        }
+
+      ],
+      {
+        duration,
+        easing:
+          'cubic-bezier(.12,.54,.20,1)',
+        fill:'forwards'
+      }
     );
 
 
-  /*
-    If triggered by button
-    or shake, create a natural
-    random direction.
-  */
+    const shadowMidX =
+      startX +
+      (
+        targetX -
+        startX
+      )*.5;
 
-  if(
-    Math.abs(vx) < .01 &&
-    Math.abs(vy) < .01
-  ){
 
-    const angle =
+    const shadowMidY =
+      startY +
+      (
+        targetY -
+        startY
+      )*.5;
+
+
+    const highThrow =
+      upwardAmount > .58;
+
+
+    shadow.animate(
+      [
+
+        {
+          transform:
+            `translate(
+              calc(
+                -50% +
+                ${startX}px
+              ),
+              ${startY}px
+            )
+            scale(1)`,
+          opacity:.72
+        },
+
+        {
+          transform:
+            `translate(
+              calc(
+                -50% +
+                ${shadowMidX}px
+              ),
+              ${shadowMidY}px
+            )
+            scale(
+              ${
+                highThrow
+                  ? .48
+                  : .70
+              }
+            )`,
+          opacity:
+            highThrow
+              ? .20
+              : .40,
+          offset:.5
+        },
+
+        {
+          transform:
+            `translate(
+              calc(
+                -50% +
+                ${targetX}px
+              ),
+              ${targetY}px
+            )
+            scale(1)`,
+          opacity:.72
+        }
+
+      ],
+      {
+        duration,
+        easing:
+          'ease-in-out',
+        fill:'forwards'
+      }
+    );
+
+
+    launchSound();
+
+
+    await wait(
+      duration*.87
+    );
+
+
+    clink(
+      clamp(
+        .85 +
+        strength*.20,
+        .85,
+        1.4
+      )
+    );
+
+
+    vibrate(
+      [
+        20,
+        28,
+        10
+      ]
+    );
+
+
+    await wait(
+      duration*.13
+    );
+
+
+    /*
+      LANDING BOUNCE
+    */
+
+    const bounceDistance =
+      5 +
+      strength*3;
+
+
+    const bounceX =
+      clamp(
+        targetX +
+        dirX*bounceDistance,
+        -limits.x,
+        limits.x
+      );
+
+
+    const bounceY =
+      clamp(
+        targetY -
+        (
+          8 +
+          strength*5
+        ),
+        -limits.y,
+        limits.y
+      );
+
+
+    coinWrap.animate(
+      [
+
+        {
+          transform:
+            `translate3d(
+              ${targetX}px,
+              ${targetY}px,
+              0
+            )`
+        },
+
+        {
+          transform:
+            `translate3d(
+              ${bounceX}px,
+              ${bounceY}px,
+              0
+            )`,
+          offset:.35
+        },
+
+        {
+          transform:
+            `translate3d(
+              ${targetX}px,
+              ${targetY}px,
+              0
+            )`
+        }
+
+      ],
+      {
+        duration:250,
+        easing:'ease-out',
+        fill:'forwards'
+      }
+    );
+
+
+    if(
+      strength > 1.25
+    ){
+
+      await wait(
+        95
+      );
+
+
+      clink(
+        .30
+      );
+
+
+      vibrate(
+        8
+      );
+
+
+      await wait(
+        155
+      );
+
+    }
+    else{
+
+      await wait(
+        250
+      );
+
+    }
+
+
+    /*
+      SAVE LANDING POSITION
+    */
+
+    coinPos.x =
+      targetX;
+
+
+    coinPos.y =
+      targetY;
+
+
+    currentFace =
+      outcome;
+
+
+    cancelAnimations();
+
+
+    setRestingPosition();
+
+
+    /*
+      SINGLE
+    */
+
+    if(
+      mode ===
+      'single'
+    ){
+
+      showResult(
+        outcome
+      );
+
+
+      flipping =
+        false;
+
+
+      hint.style.opacity =
+        '1';
+
+
+      return;
+
+    }
+
+
+    /*
+      BEST OF 3
+    */
+
+    series[outcome]++;
+
+
+    updateScore();
+
+
+    if(
+      series[outcome] >= 2
+    ){
+
+      showResult(
+        `${outcome} wins`,
+        'Best of 3'
+      );
+
+
+      series = {
+        heads:0,
+        tails:0
+      };
+
+
+      await wait(
+        1000
+      );
+
+
+      updateScore();
+
+
+      flipping =
+        false;
+
+
+      hint.style.opacity =
+        '1';
+
+
+      return;
+
+    }
+
+
+    showResult(
+      outcome,
+      `${series.heads}–${series.tails}`
+    );
+
+
+    await wait(
+      650
+    );
+
+
+    clearResult();
+
+
+    flipping =
+      false;
+
+
+    hint.style.opacity =
+      '1';
+
+
+    await wait(
+      180
+    );
+
+
+    const randomAngle =
       secureFloat(
         0,
         Math.PI*2
       );
 
-    vx =
-      Math.cos(angle);
 
-    vy =
-      Math.sin(angle);
+    doFlip({
 
-  }
-
-
-  const velocity =
-    Math.hypot(
-      vx,
-      vy
-    );
-
-
-  const dirX =
-    vx /
-    Math.max(
-      velocity,
-      .001
-    );
-
-  const dirY =
-    vy /
-    Math.max(
-      velocity,
-      .001
-    );
-
-
-  const strength =
-    clamp(
-      Number(
-        gesture.strength ||
-        1
-      ),
-      .65,
-      2.4
-    );
-
-
-  const limits =
-    stageLimits();
-
-
-  /*
-    Gesture classification.
-
-    These intentionally behave
-    very differently.
-  */
-
-  const upwardAmount =
-    clamp(
-      -dirY,
-      0,
-      1
-    );
-
-  const downwardAmount =
-    clamp(
-      dirY,
-      0,
-      1
-    );
-
-  const sidewaysAmount =
-    Math.abs(
-      dirX
-    );
-
-
-  /*
-    Horizontal travel is based
-    mainly on the actual gesture.
-  */
-
-  let travelX =
-    dirX *
-    (
-      65 +
-      strength*95
-    );
-
-
-  /*
-    Vertical travel depends on
-    the direction rather than
-    automatically becoming
-    an upward toss.
-  */
-
-  let travelY =
-    dirY *
-    (
-      35 +
-      strength*48
-    );
-
-
-  /*
-    Sideways flick:
-    really travel sideways.
-
-    Minimal vertical change.
-  */
-
-  if(
-    sidewaysAmount > .72 &&
-    Math.abs(dirY) < .55
-  ){
-
-    travelX =
-      dirX *
-      (
-        105 +
-        strength*115
-      );
-
-    travelY =
-      dirY *
-      (
-        22 +
-        strength*25
-      );
-
-  }
-
-
-  /*
-    Downward:
-    preserve the downward
-    direction strongly.
-  */
-
-  if(
-    downwardAmount > .58
-  ){
-
-    travelY =
-      dirY *
-      (
-        70 +
-        strength*75
-      );
-
-  }
-
-
-  /*
-    Upward:
-    traditional toss has much
-    more vertical distance.
-  */
-
-  if(
-    upwardAmount > .58
-  ){
-
-    travelY =
-      dirY *
-      (
-        75 +
-        strength*90
-      );
-
-  }
-
-
-  const startX =
-    coinPos.x;
-
-  const startY =
-    coinPos.y;
-
-
-  let targetX =
-    clamp(
-      startX +
-      travelX,
-      -limits.x,
-      limits.x
-    );
-
-
-  let targetY =
-    clamp(
-      startY +
-      travelY,
-      -limits.y,
-      limits.y
-    );
-
-
-  /*
-    Rotation.
-  */
-
-  const contactBias =
-    clamp(
-      Number(
-        gesture.spinBias ||
-        0
-      ),
-      -1,
-      1
-    );
-
-
-  let spinDirection =
-    Math.sign(
-      vx*.8 +
-      contactBias
-    );
-
-
-  if(
-    spinDirection === 0
-  ){
-
-    spinDirection =
-      secureFloat(
-        0,
-        1
-      ) < .5
-        ? -1
-        : 1;
-
-  }
-
-
-  const startRotation =
-    currentFace ===
-    'tails'
-      ? 180
-      : 0;
-
-
-  const turns =
-    Math.round(
-      secureFloat(
-        4,
-        7
-      ) +
-      strength*1.7
-    );
-
-
-  const faceChange =
-    outcome ===
-    currentFace
-      ? 0
-      : 180;
-
-
-  const endRotation =
-    startRotation +
-    spinDirection *
-    (
-      turns*360 +
-      faceChange
-    );
-
-
-  /*
-    Duration depends on
-    throw strength.
-  */
-
-  const duration =
-    clamp(
-      980 +
-      strength*260 +
-      secureFloat(
-        -100,
-        130
-      ),
-      1000,
-      1700
-    );
-
-
-  /*
-    ANGLE-SPECIFIC PATHS
-  */
-
-  let path;
-
-
-  /*
-    DOWNWARD THROW
-
-    Dive first,
-    hit low,
-    rebound upward,
-    then settle.
-  */
-
-  if(
-    downwardAmount > .58
-  ){
-
-    const diveX =
-      startX +
-      (
-        targetX -
-        startX
-      )*.66;
-
-
-    const diveY =
-      clamp(
-        startY +
-        (
-          75 +
-          strength*80
+      vx:
+        Math.cos(
+          randomAngle
         ),
-        -limits.y,
-        limits.y
-      );
 
-
-    const reboundY =
-      clamp(
-        targetY -
-        (
-          28 +
-          strength*25
+      vy:
+        Math.sin(
+          randomAngle
         ),
-        -limits.y,
-        limits.y
-      );
 
+      strength:
+        secureFloat(
+          .85,
+          1.4
+        ),
 
-    path = [
+      spinBias:
+        secureFloat(
+          -.4,
+          .4
+        )
 
-      {
-        transform:
-          `translate3d(
-            ${startX}px,
-            ${startY}px,
-            0
-          )`,
-        offset:0
-      },
-
-      {
-        transform:
-          `translate3d(
-            ${diveX}px,
-            ${diveY}px,
-            0
-          )`,
-        offset:.38
-      },
-
-      {
-        transform:
-          `translate3d(
-            ${targetX}px,
-            ${reboundY}px,
-            0
-          )`,
-        offset:.68
-      },
-
-      {
-        transform:
-          `translate3d(
-            ${targetX}px,
-            ${targetY}px,
-            0
-          )`,
-        offset:1
-      }
-
-    ];
+    });
 
   }
+  catch(error){
 
-
-  /*
-    SIDEWAYS THROW
-
-    Travels wide and low.
-
-    Only a small hop.
-  */
-
-  else if(
-    sidewaysAmount > .72 &&
-    Math.abs(dirY) < .55
-  ){
-
-    const hop =
-      38 +
-      strength*28;
-
-
-    const midX =
-      startX +
-      (
-        targetX -
-        startX
-      )*.53;
-
-
-    const midY =
-      clamp(
-        startY -
-        hop,
-        -limits.y,
-        limits.y
-      );
-
-
-    path = [
-
-      {
-        transform:
-          `translate3d(
-            ${startX}px,
-            ${startY}px,
-            0
-          )`,
-        offset:0
-      },
-
-      {
-        transform:
-          `translate3d(
-            ${midX}px,
-            ${midY}px,
-            0
-          )`,
-        offset:.47
-      },
-
-      {
-        transform:
-          `translate3d(
-            ${targetX}px,
-            ${targetY}px,
-            0
-          )`,
-        offset:1
-      }
-
-    ];
-
-  }
-
-
-  /*
-    UPWARD THROW
-
-    Traditional high coin arc.
-  */
-
-  else if(
-    upwardAmount > .58
-  ){
-
-    const rise =
-      125 +
-      strength*85;
-
-
-    const apexX =
-      startX +
-      (
-        targetX -
-        startX
-      )*.42;
-
-
-    const apexY =
-      clamp(
-        startY -
-        rise,
-        -limits.y,
-        limits.y
-      );
-
-
-    path = [
-
-      {
-        transform:
-          `translate3d(
-            ${startX}px,
-            ${startY}px,
-            0
-          )`,
-        offset:0
-      },
-
-      {
-        transform:
-          `translate3d(
-            ${apexX}px,
-            ${apexY}px,
-            0
-          )`,
-        offset:.46
-      },
-
-      {
-        transform:
-          `translate3d(
-            ${targetX}px,
-            ${targetY}px,
-            0
-          )`,
-        offset:1
-      }
-
-    ];
-
-  }
-
-
-  /*
-    DIAGONAL
-
-    Follows the actual gesture
-    direction.
-
-    Small perpendicular arc
-    keeps it feeling physical
-    without forcing it upward.
-  */
-
-  else{
-
-    const perpendicularX =
-      -dirY;
-
-
-    const perpendicularY =
-      dirX;
-
-
-    const arcStrength =
-      secureFloat(
-        22,
-        46
-      ) *
-      (
-        .8 +
-        strength*.25
-      );
-
-
-    const midX =
-      startX +
-      (
-        targetX -
-        startX
-      )*.52 +
-      perpendicularX *
-      arcStrength;
-
-
-    const midY =
-      startY +
-      (
-        targetY -
-        startY
-      )*.52 +
-      perpendicularY *
-      arcStrength;
-
-
-    path = [
-
-      {
-        transform:
-          `translate3d(
-            ${startX}px,
-            ${startY}px,
-            0
-          )`,
-        offset:0
-      },
-
-      {
-        transform:
-          `translate3d(
-            ${midX}px,
-            ${midY}px,
-            0
-          )`,
-        offset:.5
-      },
-
-      {
-        transform:
-          `translate3d(
-            ${targetX}px,
-            ${targetY}px,
-            0
-          )`,
-        offset:1
-      }
-
-    ];
-
-  }
-
-
-  /*
-    Animate travel.
-  */
-
-  coinWrap.animate(
-    path,
-    {
-      duration,
-      easing:
-        'cubic-bezier(.16,.68,.22,1)',
-      fill:'forwards'
-    }
-  );
-
-
-  /*
-    Coin rotation / wobble.
-  */
-
-  const wobbleX =
-    secureFloat(
-      -48,
-      48
+    unlockAfterError(
+      error
     );
 
-
-  const wobbleZ =
-    clamp(
-      dirX*36 +
-      contactBias*18 +
-      secureFloat(
-        -8,
-        8
-      ),
-      -55,
-      55
-    );
-
-
-  coin.animate(
-    [
-
-      {
-        transform:
-          `rotateY(
-            ${startRotation}deg
-          )
-          rotateX(0deg)
-          rotateZ(0deg)`,
-        offset:0
-      },
-
-      {
-        transform:
-          `rotateY(
-            ${
-              startRotation +
-              (
-                endRotation -
-                startRotation
-              )*.48
-            }deg
-          )
-          rotateX(
-            ${wobbleX}deg
-          )
-          rotateZ(
-            ${wobbleZ}deg
-          )`,
-        offset:.48
-      },
-
-      {
-        transform:
-          `rotateY(
-            ${
-              startRotation +
-              (
-                endRotation -
-                startRotation
-              )*.90
-            }deg
-          )
-          rotateX(
-            ${wobbleX*.16}deg
-          )
-          rotateZ(
-            ${wobbleZ*.12}deg
-          )`,
-        offset:.89
-      },
-
-      {
-        transform:
-          `rotateY(
-            ${endRotation}deg
-          )
-          rotateX(0deg)
-          rotateZ(0deg)`,
-        offset:1
-      }
-
-    ],
-    {
-      duration,
-      easing:
-        'cubic-bezier(.12,.54,.20,1)',
-      fill:'forwards'
-    }
-  );
-
-
-  /*
-    Shadow follows horizontal/
-    vertical travel while shrinking
-    when the coin gains height.
-  */
-
-  const shadowMidX =
-    startX +
-    (
-      targetX -
-      startX
-    )*.5;
-
-
-  const shadowMidY =
-    startY +
-    (
-      targetY -
-      startY
-    )*.5;
-
-
-  const highThrow =
-    upwardAmount > .58;
-
-
-  shadow.animate(
-    [
-
-      {
-        transform:
-          `translate(
-            calc(
-              -50% +
-              ${startX}px
-            ),
-            ${startY}px
-          )
-          scale(1)`,
-        opacity:.72
-      },
-
-      {
-        transform:
-          `translate(
-            calc(
-              -50% +
-              ${shadowMidX}px
-            ),
-            ${shadowMidY}px
-          )
-          scale(
-            ${
-              highThrow
-                ? .48
-                : .70
-            }
-          )`,
-        opacity:
-          highThrow
-            ? .20
-            : .40,
-        offset:.5
-      },
-
-      {
-        transform:
-          `translate(
-            calc(
-              -50% +
-              ${targetX}px
-            ),
-            ${targetY}px
-          )
-          scale(1)`,
-        opacity:.72
-      }
-
-    ],
-    {
-      duration,
-      easing:'ease-in-out',
-      fill:'forwards'
-    }
-  );
-
-
-  launchSound();
-
-
-  await wait(
-    duration*.87
-  );
-
-
-  clink(
-    clamp(
-      .85 +
-      strength*.20,
-      .85,
-      1.4
-    )
-  );
-
-
-  vibrate(
-    [
-      20,
-      28,
-      10
-    ]
-  );
-
-
-  await wait(
-    duration*.13
-  );
-
-
-  /*
-    Landing bounce continues
-    in the direction of travel.
-  */
-
-  const bounceDistance =
-    5 +
-    strength*3;
-
-
-  const bounceX =
-    clamp(
-      targetX +
-      dirX*bounceDistance,
-      -limits.x,
-      limits.x
-    );
-
-
-  const bounceY =
-    clamp(
-      targetY -
-      (
-        8 +
-        strength*5
-      ),
-      -limits.y,
-      limits.y
-    );
-
-
-  coinWrap.animate(
-    [
-
-      {
-        transform:
-          `translate3d(
-            ${targetX}px,
-            ${targetY}px,
-            0
-          )`
-      },
-
-      {
-        transform:
-          `translate3d(
-            ${bounceX}px,
-            ${bounceY}px,
-            0
-          )`,
-        offset:.35
-      },
-
-      {
-        transform:
-          `translate3d(
-            ${targetX}px,
-            ${targetY}px,
-            0
-          )`
-      }
-
-    ],
-    {
-      duration:250,
-      easing:'ease-out',
-      fill:'forwards'
-    }
-  );
-
-
-  if(
-    strength >
-    1.25
-  ){
-
-    await wait(95);
-
-    clink(.30);
-
-    vibrate(8);
-
-    await wait(155);
-
   }
-  else{
-
-    await wait(250);
-
-  }
-
-
-  /*
-    Commit final physical position.
-  */
-
-  coinPos.x =
-    targetX;
-
-  coinPos.y =
-    targetY;
-
-  currentFace =
-    outcome;
-
-
-  cancelAnimations();
-
-  setRestingPosition();
-
-
-  /*
-    RESULTS
-  */
-
-  if(
-    mode ===
-    'single'
-  ){
-
-    showResult(
-      outcome
-    );
-
-    flipping =
-      false;
-
-    hint.style.opacity =
-      '1';
-
-    return;
-
-  }
-
-
-  series[outcome]++;
-
-  updateScore();
-
-
-  if(
-    series[outcome] >= 2
-  ){
-
-    showResult(
-      `${outcome} wins`,
-      'Best of 3'
-    );
-
-    series = {
-      heads:0,
-      tails:0
-    };
-
-    await wait(1000);
-
-    updateScore();
-
-    flipping =
-      false;
-
-    hint.style.opacity =
-      '1';
-
-    return;
-
-  }
-
-
-  showResult(
-    outcome,
-    `${series.heads}–${series.tails}`
-  );
-
-
-  await wait(650);
-
-  clearResult();
-
-  flipping =
-    false;
-
-
-  await wait(180);
-
-
-  /*
-    Next best-of-three throw
-    gets a genuinely different
-    random direction.
-  */
-
-  const randomAngle =
-    secureFloat(
-      0,
-      Math.PI*2
-    );
-
-
-  return doFlip({
-
-    vx:
-      Math.cos(
-        randomAngle
-      ),
-
-    vy:
-      Math.sin(
-        randomAngle
-      ),
-
-    strength:
-      secureFloat(
-        .85,
-        1.4
-      ),
-
-    spinBias:
-      secureFloat(
-        -.4,
-        .4
-      )
-
-  });
 
 }
 
 
 /*
-  TOUCH / FLICK INPUT
+  FINGER / TOUCH INPUT
 */
 
 let drag =
@@ -2448,13 +2404,16 @@ function hitTestCoin(
     coinWrap
       .getBoundingClientRect();
 
+
   const cx =
     rect.left +
     rect.width/2;
 
+
   const cy =
     rect.top +
     rect.height/2;
+
 
   const radius =
     Math.min(
@@ -2488,11 +2447,13 @@ stage.addEventListener(
       return;
     }
 
+
     const hit =
       hitTestCoin(
         event.clientX,
         event.clientY
       );
+
 
     if(!hit.inside){
       return;
@@ -2588,11 +2549,6 @@ stage.addEventListener(
       drag.startY;
 
 
-    /*
-      Coin gives under your finger
-      in the actual drag direction.
-    */
-
     const previewX =
       clamp(
         dx*.20,
@@ -2652,13 +2608,6 @@ stage.addEventListener(
     });
 
 
-    /*
-      Keep recent movement so the
-      release direction comes from
-      the actual flick, not the entire
-      slow drag.
-    */
-
     while(
       drag.samples.length > 2 &&
       now -
@@ -2692,6 +2641,7 @@ function finishGesture(
 
   const gesture =
     drag;
+
 
   drag =
     null;
@@ -2767,10 +2717,7 @@ function finishGesture(
 
 
   /*
-    If someone does a slower,
-    deliberate swipe, use the
-    overall displacement so it
-    still travels correctly.
+    Slow swipe fallback.
   */
 
   if(
@@ -2788,9 +2735,11 @@ function finishGesture(
         gesture.startTime
       );
 
+
     vx =
       dx /
       totalTime;
+
 
     vy =
       dy /
@@ -2805,11 +2754,6 @@ function finishGesture(
       vy
     );
 
-
-  /*
-    Contact point determines
-    torque visually.
-  */
 
   const contactX =
     clamp(
@@ -2856,7 +2800,7 @@ function finishGesture(
 
 
   /*
-    ANY direction counts.
+    ANY DIRECTION FLICK
   */
 
   if(
@@ -2886,15 +2830,14 @@ function finishGesture(
 
     });
 
+
     return;
 
   }
 
 
   /*
-    Simple tap.
-
-    Edge taps create more torque.
+    TAP
   */
 
   doFlip({
@@ -2944,8 +2887,18 @@ stage.addEventListener(
 );
 
 
+stage.addEventListener(
+  'touchmove',
+  event =>
+    event.preventDefault(),
+  {
+    passive:false
+  }
+);
+
+
 /*
-  BUTTON FALLBACK
+  BUTTONS
 */
 
 flipBtn.addEventListener(
@@ -2962,10 +2915,14 @@ flipBtn.addEventListener(
     doFlip({
 
       vx:
-        Math.cos(angle),
+        Math.cos(
+          angle
+        ),
 
       vy:
-        Math.sin(angle),
+        Math.sin(
+          angle
+        ),
 
       strength:
         secureFloat(
@@ -2985,10 +2942,6 @@ flipBtn.addEventListener(
 );
 
 
-/*
-  MODES
-*/
-
 singleBtn.addEventListener(
   'click',
   () =>
@@ -3006,10 +2959,6 @@ bo3Btn.addEventListener(
     )
 );
 
-
-/*
-  SOUND
-*/
 
 soundBtn.addEventListener(
   'click',
@@ -3029,6 +2978,7 @@ soundBtn.addEventListener(
 
       ensureAudio();
 
+
       tone(
         520,
         .06,
@@ -3041,196 +2991,104 @@ soundBtn.addEventListener(
 );
 
 
-
-    motionEnabled =
-      true;
-
-
-    motionBtn.textContent =
-      'Shake On';
-
-
-    statusEl.textContent =
-      'Shake ready · motion sensor connected';
-
-
-    if(motionTimer){
-
-      clearTimeout(
-        motionTimer
-      );
-
-    }
-
-  }
-
-
-  if(
-    jerk > 5.4 ||
-    gravityDelta > 7
-  ){
-
-    triggerShake(
-
-      Math.max(
-        .9,
-        Math.min(
-          1.9,
-          Math.max(
-            jerk,
-            gravityDelta
-          ) /
-          7
-        )
-      )
-
-    );
-
-  }
-
-}
-
-
-function deviceMotionHandler(
-  event
-){
-
-  const a =
-    event.accelerationIncludingGravity ||
-    event.acceleration;
-
-
-  if(
-    !a ||
-    a.x == null ||
-    a.y == null ||
-    a.z == null
-  ){
-
-    return;
-
-  }
-
-
-  processAcceleration(
-
-    Number(a.x),
-
-    Number(a.y),
-
-    Number(a.z)
-
-  );
-
-}
-
-
-async function startGenericAccelerometer(){
-
-  if(
-    !(
-      'Accelerometer'
-      in window
-    )
-  ){
-
-    return false;
-
-  }
-
-
-  try{
-
-    if(
-      navigator.permissions &&
-      navigator.permissions.query
-    ){
-
-      try{
-
-        const permission =
-          await navigator.permissions.query({
-            name:
-              'accelerometer'
-          });
-
-
-        if(
-          permission.state ===
-          'denied'
-        ){
-
-          return false;
-
-        }
-
-      }
-      catch(_){}
-
-    }
-
-
-    const sensor =
-      new Accelerometer({
-        frequency:40
-      });
-
-
-    sensor.addEventListener(
-      'reading',
-      () => {
-
-        processAcceleration(
-
-          Number(
-            sensor.x || 0
-          ),
-
-          Number(
-            sensor.y || 0
-          ),
-
-          Number(
-            sensor.z || 0
-          )
-
-        );
-
-      }
-    );
-
-
-    sensor.start();
-
-
-    window.coinAccelerometer =
-      sensor;
-
-
-    return true;
-
-  }
-  catch(_){
-
 /*
-  SHAKE SUPPORT
+  DIRECTIONAL SHAKE
 */
 
-let shakeCapture = null;
+let motionEnabled =
+  false;
 
-let gravityEstimate = {
+
+let motionSamples =
+  0;
+
+
+let motionTimer =
+  null;
+
+
+let motionListenerAttached =
+  false;
+
+
+let genericSensor =
+  null;
+
+
+let shakeCapture =
+  null;
+
+
+let shakeCooldownUntil =
+  0;
+
+
+let dmGravityReady =
+  false;
+
+
+let dmGravity = {
   x:0,
   y:0,
-  z:9.81
+  z:0
+};
+
+
+let genericGravityReady =
+  false;
+
+
+let genericGravity = {
+  x:0,
+  y:0,
+  z:0
 };
 
 
 /*
-  Convert phone sensor direction
-  into screen direction.
+  Mark sensor as confirmed only
+  after actual motion data arrives.
+*/
 
-  This accounts for portrait /
-  landscape rotation.
+function markMotionReady(){
+
+  motionSamples++;
+
+
+  if(motionEnabled){
+    return;
+  }
+
+
+  motionEnabled =
+    true;
+
+
+  motionBtn.textContent =
+    'Shake On';
+
+
+  statusEl.textContent =
+    'Shake ready · directional motion connected';
+
+
+  if(motionTimer){
+
+    clearTimeout(
+      motionTimer
+    );
+
+  }
+
+}
+
+
+/*
+  Convert sensor coordinates into
+  on-screen coordinates.
+
+  CSS Y goes down, sensor Y goes up,
+  so Y is inverted.
 */
 
 function sensorToScreen(
@@ -3238,248 +3096,113 @@ function sensorToScreen(
   y
 ){
 
+  const rawAngle =
+    screen.orientation?.angle ??
+    window.orientation ??
+    0;
+
+
   const angle =
-    screen.orientation?.angle || 0;
+    (
+      (
+        Number(rawAngle) %
+        360
+      ) +
+      360
+    ) %
+    360;
 
 
-  if(angle === 90){
+  let sx =
+    x;
 
-    return {
-      x:-y,
-      y:x
-    };
+
+  let sy =
+    y;
+
+
+  if(
+    angle === 90
+  ){
+
+    sx =
+      -y;
+
+
+    sy =
+      x;
 
   }
+  else if(
+    angle === 180
+  ){
+
+    sx =
+      -x;
 
 
-  if(angle === 180){
-
-    return {
-      x:-x,
-      y:-y
-    };
+    sy =
+      -y;
 
   }
+  else if(
+    angle === 270
+  ){
+
+    sx =
+      y;
 
 
-  if(angle === 270){
-
-    return {
-      x:y,
-      y:-x
-    };
+    sy =
+      -x;
 
   }
 
 
   return {
-    x,
-    y
-  };
 
-}
+    x:sx,
 
-
-/*
-  Start collecting a very short
-  burst of movement.
-
-  We do NOT try to calculate the
-  phone's actual position.
-
-  We only care about the strongest
-  direction of the shake.
-*/
-
-function startShakeCapture(){
-
-  if(
-    shakeCapture ||
-    flipping
-  ){
-    return;
-  }
-
-
-  shakeCapture = {
-
-    x:0,
-    y:0,
-    z:0,
-
-    force:0,
-
-    samples:0
+    y:-sy
 
   };
 
-
-  setTimeout(
-    finishShakeCapture,
-    130
-  );
-
 }
 
 
 /*
-  Finish the 130ms shake sample
-  and turn it into the same
-  vx / vy system used by flicks.
+  Collect a short directional
+  impulse instead of merely
+  detecting "something moved".
 */
 
-function finishShakeCapture(){
-
-  if(!shakeCapture){
-    return;
-  }
-
-
-  const data =
-    shakeCapture;
-
-
-  shakeCapture =
-    null;
-
-
-  if(
-    data.samples <
-    2
-  ){
-    return;
-  }
-
-
-  let screenVector =
-    sensorToScreen(
-      data.x,
-      data.y
-    );
-
-
-  let x =
-    screenVector.x;
-
-
-  let y =
-    screenVector.y;
-
-
-  const xyMagnitude =
-    Math.hypot(
-      x,
-      y
-    );
-
-
-  /*
-    If the shake was mostly toward
-    or away from the screen, there
-    isn't a strong 2D direction.
-
-    In that case give it a small
-    random travel direction and use
-    Z movement mostly for strength.
-  */
-
-  if(
-    xyMagnitude <
-    .8
-  ){
-
-    const randomAngle =
-      secureFloat(
-        0,
-        Math.PI*2
-      );
-
-
-    x =
-      Math.cos(
-        randomAngle
-      );
-
-
-    y =
-      Math.sin(
-        randomAngle
-      );
-
-  }
-  else{
-
-    x /=
-      xyMagnitude;
-
-
-    y /=
-      xyMagnitude;
-
-  }
-
-
-  const zForce =
-    Math.min(
-      Math.abs(
-        data.z
-      ) / 18,
-      .7
-    );
-
-
-  const shakeStrength =
-    clamp(
-      .9 +
-      data.force/18 +
-      zForce,
-      .9,
-      2.2
-    );
-
-
-  /*
-    Feed shake direction into the
-    SAME physics as finger flicks.
-
-    If up/down feels reversed on
-    your phone, change:
-      vy:y
-    to:
-      vy:-y
-  */
-
-  doFlip({
-
-    vx:x,
-
-    vy:y,
-
-    strength:
-      shakeStrength,
-
-    spinBias:
-      clamp(
-        x*.4,
-        -.5,
-        .5
-      )
-
-  });
-
-}
-
-
-/*
-  Feed one accelerometer sample
-  into the short shake capture.
-*/
-
-function addShakeSample(
+function addLinearAcceleration(
   x,
   y,
   z
 ){
+
+  markMotionReady();
+
+
+  if(flipping){
+    return;
+  }
+
+
+  const now =
+    performance.now();
+
+
+  if(
+    now <
+    shakeCooldownUntil
+  ){
+
+    return;
+
+  }
+
 
   const magnitude =
     Math.hypot(
@@ -3490,87 +3213,313 @@ function addShakeSample(
 
 
   /*
-    Ignore tiny hand movement.
+    Don't start a flip from
+    ordinary hand movement.
   */
+
+  if(!shakeCapture){
+
+    if(
+      magnitude < 4.5
+    ){
+
+      return;
+
+    }
+
+
+    shakeCapture = {
+
+      firstX:x,
+      firstY:y,
+      firstZ:z,
+
+      sumX:0,
+      sumY:0,
+      sumZ:0,
+
+      weightSum:0,
+
+      peakX:x,
+      peakY:y,
+      peakZ:z,
+
+      peakMag:
+        magnitude,
+
+      samples:0
+
+    };
+
+
+    setTimeout(
+      finishShakeCapture,
+      125
+    );
+
+  }
+
 
   if(
-    magnitude <
-    2.2
+    !shakeCapture ||
+    magnitude < .7
   ){
+
     return;
-  }
-
-
-  if(!shakeCapture){
-
-    startShakeCapture();
 
   }
 
-
-  if(!shakeCapture){
-    return;
-  }
-
-
-  /*
-    Weight stronger movement more
-    heavily so the main impulse wins
-    over tiny direction changes.
-  */
 
   const weight =
     Math.min(
       magnitude,
-      20
+      18
     );
 
 
-  shakeCapture.x +=
+  shakeCapture.sumX +=
     x * weight;
 
 
-  shakeCapture.y +=
+  shakeCapture.sumY +=
     y * weight;
 
 
-  shakeCapture.z +=
+  shakeCapture.sumZ +=
     z * weight;
 
 
-  shakeCapture.force =
-    Math.max(
-      shakeCapture.force,
-      magnitude
-    );
+  shakeCapture.weightSum +=
+    weight;
 
 
   shakeCapture.samples++;
+
+
+  if(
+    magnitude >
+    shakeCapture.peakMag
+  ){
+
+    shakeCapture.peakMag =
+      magnitude;
+
+
+    shakeCapture.peakX =
+      x;
+
+
+    shakeCapture.peakY =
+      y;
+
+
+    shakeCapture.peakZ =
+      z;
+
+  }
 
 }
 
 
 /*
-  DeviceMotionEvent
-
-  Prefer event.acceleration because
-  it already excludes gravity.
-
-  Some Android browsers only provide
-  accelerationIncludingGravity, so
-  the fallback below estimates and
-  removes gravity with a low-pass
-  filter.
+  Turn the captured shake into
+  vx / vy / strength for the
+  exact same physics system used
+  by finger flicks.
 */
 
-function deviceMotionHandler(
-  event
-){
+function finishShakeCapture(){
 
-  if(flipping){
+  const data =
+    shakeCapture;
+
+
+  shakeCapture =
+    null;
+
+
+  if(
+    !data ||
+    data.samples < 2 ||
+    data.peakMag < 4.5 ||
+    flipping
+  ){
+
     return;
+
   }
 
+
+  shakeCooldownUntil =
+    performance.now() +
+    650;
+
+
+  const avgX =
+    data.weightSum
+      ? data.sumX /
+        data.weightSum
+      : data.firstX;
+
+
+  const avgY =
+    data.weightSum
+      ? data.sumY /
+        data.weightSum
+      : data.firstY;
+
+
+  const avgZ =
+    data.weightSum
+      ? data.sumZ /
+        data.weightSum
+      : data.firstZ;
+
+
+  /*
+    Favor the FIRST impulse.
+
+    That prevents a back-and-forth
+    shake from averaging itself into
+    basically zero.
+  */
+
+  const impulseX =
+    data.firstX*.70 +
+    avgX*.20 +
+    data.peakX*.10;
+
+
+  const impulseY =
+    data.firstY*.70 +
+    avgY*.20 +
+    data.peakY*.10;
+
+
+  const impulseZ =
+    data.firstZ*.70 +
+    avgZ*.20 +
+    data.peakZ*.10;
+
+
+  const screenVector =
+    sensorToScreen(
+      impulseX,
+      impulseY
+    );
+
+
+  let vx =
+    screenVector.x;
+
+
+  let vy =
+    screenVector.y;
+
+
+  let xy =
+    Math.hypot(
+      vx,
+      vy
+    );
+
+
+  /*
+    Mostly Z-axis movement
+    = toward/away from screen.
+
+    Use Z mainly as extra throw
+    strength and choose a minor
+    2D travel direction.
+  */
+
+  if(
+    xy < .45
+  ){
+
+    const angle =
+      secureFloat(
+        0,
+        Math.PI*2
+      );
+
+
+    vx =
+      Math.cos(
+        angle
+      );
+
+
+    vy =
+      Math.sin(
+        angle
+      );
+
+
+    xy =
+      1;
+
+  }
+  else{
+
+    vx /=
+      xy;
+
+
+    vy /=
+      xy;
+
+  }
+
+
+  const zBoost =
+    Math.min(
+      Math.abs(
+        impulseZ
+      ) / 14,
+      .65
+    );
+
+
+  const strength =
+    clamp(
+      .88 +
+      data.peakMag/10 +
+      zBoost,
+      .9,
+      2.25
+    );
+
+
+  doFlip({
+
+    vx,
+    vy,
+
+    strength,
+
+    spinBias:
+      clamp(
+        vx*.4,
+        -.5,
+        .5
+      )
+
+  });
+
+}
+
+
+/*
+  DEVICEMOTION
+
+  Use linear acceleration when
+  Android gives it to us.
+*/
+
+function handleDeviceMotion(
+  event
+){
 
   if(
     event.acceleration &&
@@ -3579,65 +3528,34 @@ function deviceMotionHandler(
     event.acceleration.z != null
   ){
 
-    const x =
+    addLinearAcceleration(
+
       Number(
         event.acceleration.x
-      );
+      ),
 
-
-    const y =
       Number(
         event.acceleration.y
-      );
+      ),
 
-
-    const z =
       Number(
         event.acceleration.z
-      );
+      )
 
-
-    addShakeSample(
-      x,
-      y,
-      z
     );
-
-
-    motionSamples++;
-
-
-    if(
-      motionSamples === 1
-    ){
-
-      motionEnabled =
-        true;
-
-
-      motionBtn.textContent =
-        'Shake On';
-
-
-      statusEl.textContent =
-        'Shake ready · directional motion connected';
-
-
-      if(motionTimer){
-
-        clearTimeout(
-          motionTimer
-        );
-
-      }
-
-    }
 
 
     return;
 
   }
 
+
+  /*
+    Fallback:
+    accelerationIncludingGravity.
+
+    Estimate gravity and subtract it.
+  */
 
   const a =
     event.accelerationIncludingGravity;
@@ -3649,118 +3567,103 @@ function deviceMotionHandler(
     a.y == null ||
     a.z == null
   ){
+
     return;
+
   }
 
 
   const rawX =
-    Number(a.x);
+    Number(
+      a.x
+    );
 
 
   const rawY =
-    Number(a.y);
+    Number(
+      a.y
+    );
 
 
   const rawZ =
-    Number(a.z);
+    Number(
+      a.z
+    );
 
 
-  /*
-    Slowly track gravity.
-  */
+  if(!dmGravityReady){
+
+    dmGravity = {
+
+      x:rawX,
+      y:rawY,
+      z:rawZ
+
+    };
+
+
+    dmGravityReady =
+      true;
+
+
+    markMotionReady();
+
+
+    return;
+
+  }
+
 
   const alpha =
-    .82;
+    .88;
 
 
-  gravityEstimate.x =
+  dmGravity.x =
     alpha *
-    gravityEstimate.x +
+    dmGravity.x +
     (
       1-alpha
     ) *
     rawX;
 
 
-  gravityEstimate.y =
+  dmGravity.y =
     alpha *
-    gravityEstimate.y +
+    dmGravity.y +
     (
       1-alpha
     ) *
     rawY;
 
 
-  gravityEstimate.z =
+  dmGravity.z =
     alpha *
-    gravityEstimate.z +
+    dmGravity.z +
     (
       1-alpha
     ) *
     rawZ;
 
 
-  /*
-    Remove estimated gravity.
-  */
+  addLinearAcceleration(
 
-  const x =
     rawX -
-    gravityEstimate.x;
+    dmGravity.x,
 
-
-  const y =
     rawY -
-    gravityEstimate.y;
+    dmGravity.y,
 
-
-  const z =
     rawZ -
-    gravityEstimate.z;
+    dmGravity.z
 
-
-  addShakeSample(
-    x,
-    y,
-    z
   );
-
-
-  motionSamples++;
-
-
-  if(
-    motionSamples === 1
-  ){
-
-    motionEnabled =
-      true;
-
-
-    motionBtn.textContent =
-      'Shake On';
-
-
-    statusEl.textContent =
-      'Shake ready · directional motion connected';
-
-
-    if(motionTimer){
-
-      clearTimeout(
-        motionTimer
-      );
-
-    }
-
-  }
 
 }
 
 
 /*
-  Generic Accelerometer fallback
-  for Android / Chromium.
+  GENERIC ACCELEROMETER FALLBACK
+  FOR CHROMIUM / ANDROID
 */
 
 async function startGenericAccelerometer(){
@@ -3769,7 +3672,8 @@ async function startGenericAccelerometer(){
     !(
       'Accelerometer'
       in window
-    )
+    ) ||
+    genericSensor
   ){
 
     return false;
@@ -3780,8 +3684,7 @@ async function startGenericAccelerometer(){
   try{
 
     if(
-      navigator.permissions &&
-      navigator.permissions.query
+      navigator.permissions?.query
     ){
 
       try{
@@ -3818,11 +3721,6 @@ async function startGenericAccelerometer(){
       'reading',
       () => {
 
-        if(flipping){
-          return;
-        }
-
-
         const rawX =
           Number(
             sensor.x || 0
@@ -3841,94 +3739,74 @@ async function startGenericAccelerometer(){
           );
 
 
-        /*
-          Generic Accelerometer
-          includes gravity.
+        if(
+          !genericGravityReady
+        ){
 
-          Estimate and remove it.
-        */
+          genericGravity = {
+
+            x:rawX,
+            y:rawY,
+            z:rawZ
+
+          };
+
+
+          genericGravityReady =
+            true;
+
+
+          markMotionReady();
+
+
+          return;
+
+        }
+
 
         const alpha =
-          .82;
+          .88;
 
 
-        gravityEstimate.x =
+        genericGravity.x =
           alpha *
-          gravityEstimate.x +
+          genericGravity.x +
           (
             1-alpha
           ) *
           rawX;
 
 
-        gravityEstimate.y =
+        genericGravity.y =
           alpha *
-          gravityEstimate.y +
+          genericGravity.y +
           (
             1-alpha
           ) *
           rawY;
 
 
-        gravityEstimate.z =
+        genericGravity.z =
           alpha *
-          gravityEstimate.z +
+          genericGravity.z +
           (
             1-alpha
           ) *
           rawZ;
 
 
-        const x =
+        addLinearAcceleration(
+
           rawX -
-          gravityEstimate.x;
+          genericGravity.x,
 
-
-        const y =
           rawY -
-          gravityEstimate.y;
+          genericGravity.y,
 
-
-        const z =
           rawZ -
-          gravityEstimate.z;
+          genericGravity.z
 
-
-        addShakeSample(
-          x,
-          y,
-          z
         );
-
-
-        motionSamples++;
-
-
-        if(
-          motionSamples === 1
-        ){
-
-          motionEnabled =
-            true;
-
-
-          motionBtn.textContent =
-            'Shake On';
-
-
-          statusEl.textContent =
-            'Shake ready · directional motion connected';
-
-
-          if(motionTimer){
-
-            clearTimeout(
-              motionTimer
-            );
-
-          }
-
-        }
 
       }
     );
@@ -3943,7 +3821,7 @@ async function startGenericAccelerometer(){
     sensor.start();
 
 
-    window.coinAccelerometer =
+    genericSensor =
       sensor;
 
 
@@ -3960,7 +3838,7 @@ async function startGenericAccelerometer(){
 
 
 /*
-  Enable motion
+  ENABLE MOTION
 */
 
 async function enableMotion(){
@@ -3977,12 +3855,20 @@ async function enableMotion(){
     null;
 
 
+  dmGravityReady =
+    false;
+
+
+  genericGravityReady =
+    false;
+
+
   motionBtn.textContent =
     'Testing…';
 
 
   statusEl.textContent =
-    'Waiting for directional Android motion data…';
+    'Waiting for Android motion data…';
 
 
   if(
@@ -4002,15 +3888,12 @@ async function enableMotion(){
   }
 
 
-  let deviceMotionStarted =
-    false;
-
-
   try{
 
     if(
       'DeviceMotionEvent'
-      in window
+      in window &&
+      !motionListenerAttached
     ){
 
       if(
@@ -4033,14 +3916,14 @@ async function enableMotion(){
 
           window.addEventListener(
             'devicemotion',
-            deviceMotionHandler,
+            handleDeviceMotion,
             {
               passive:true
             }
           );
 
 
-          deviceMotionStarted =
+          motionListenerAttached =
             true;
 
         }
@@ -4050,14 +3933,14 @@ async function enableMotion(){
 
         window.addEventListener(
           'devicemotion',
-          deviceMotionHandler,
+          handleDeviceMotion,
           {
             passive:true
           }
         );
 
 
-        deviceMotionStarted =
+        motionListenerAttached =
           true;
 
       }
@@ -4068,9 +3951,26 @@ async function enableMotion(){
   catch(_){}
 
 
-  const genericStarted =
-    await
-    startGenericAccelerometer();
+  /*
+    If normal DeviceMotion stays
+    silent, try Chromium's
+    Accelerometer API.
+  */
+
+  setTimeout(
+    () => {
+
+      if(
+        motionSamples === 0
+      ){
+
+        startGenericAccelerometer();
+
+      }
+
+    },
+    700
+  );
 
 
   motionTimer =
@@ -4095,21 +3995,8 @@ async function enableMotion(){
         }
 
       },
-      2500
+      2800
     );
-
-
-  if(
-    !deviceMotionStarted &&
-    !genericStarted
-  ){
-
-    /*
-      Timer above handles
-      the error message.
-    */
-
-  }
 
 }
 
@@ -4128,8 +4015,10 @@ motionBtn.addEventListener(
 
   }
 );
+
+
 /*
-  QUARTER IMAGE ERRORS
+  QUARTER IMAGE FAILURE
 */
 
 document
@@ -4154,17 +4043,50 @@ document
 
 
 /*
-  Prevent browser scrolling
-  while physically flicking
-  the coin.
+  GLOBAL FAILSAFE
+
+  One unexpected error should never
+  permanently lock the app again.
 */
 
-stage.addEventListener(
-  'touchmove',
-  event =>
-    event.preventDefault(),
-  {
-    passive:false
+window.addEventListener(
+  'error',
+  event => {
+
+    if(flipping){
+
+      unlockAfterError(
+
+        event.error ||
+        new Error(
+          event.message
+        )
+
+      );
+
+    }
+
+  }
+);
+
+
+window.addEventListener(
+  'unhandledrejection',
+  event => {
+
+    if(flipping){
+
+      unlockAfterError(
+
+        event.reason ||
+        new Error(
+          'Unhandled promise rejection'
+        )
+
+      );
+
+    }
+
   }
 );
 
