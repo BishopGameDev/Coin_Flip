@@ -5,7 +5,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#0f1115">
 <title>Coin Flip</title>
-
+<link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/7/70/2021-P_US_Quarter_Obverse.jpg">
+<link rel="preload" as="image" href="https://upload.wikimedia.org/wikipedia/commons/7/70/2021-P_US_Quarter_Obverse.jpg">
+<link rel="preload" as="image" href="https://upload.wikimedia.org/wikipedia/commons/e/eb/United_States_Quarter_Reverse_2021.jpg">
+<link rel="preload" as="audio" href="https://upload.wikimedia.org/wikipedia/commons/c/c5/Coin_dropped_on_wooden_floor.ogg">
+<!--
+  Visuals: U.S. Mint / U.S. Treasury quarter images (public domain in the U.S.).
+  Landing audio: "Coin dropped on wooden floor" by ezwa / PDSounds (public domain),
+  mirrored by Wikimedia Commons.
+-->
 <style>
 :root{
   color-scheme:dark;
@@ -16,1009 +24,302 @@
   --muted:#9ba3b0;
   --line:#2b313d;
 }
-
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{
-  width:100%;
-  height:100%;
-  margin:0;
-  overflow:hidden;
-  background:var(--bg);
+  width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg);
   font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  color:var(--text);
+  color:var(--text)
 }
-
-body{
-  overscroll-behavior:none;
-  touch-action:manipulation;
-}
-
+body{overscroll-behavior:none;touch-action:manipulation}
 .app{
-  height:100dvh;
-  display:grid;
-  grid-template-rows:auto 1fr auto;
-  gap:12px;
-
-  padding:
-    calc(env(safe-area-inset-top) + 16px)
-    18px
-    calc(env(safe-area-inset-bottom) + 18px);
-
-  background:
-    radial-gradient(
-      circle at 50% 38%,
-      rgba(255,255,255,.055),
-      transparent 32%
-    ),
-    linear-gradient(
-      180deg,
-      #101319,
-      #0c0e12
-    );
+  height:100dvh;display:grid;grid-template-rows:auto 1fr auto;gap:12px;
+  padding:calc(env(safe-area-inset-top) + 16px) 18px calc(env(safe-area-inset-bottom) + 18px);
+  background:radial-gradient(circle at 50% 38%,rgba(255,255,255,.055),transparent 32%),linear-gradient(180deg,#101319,#0c0e12)
 }
-
-.topbar{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-}
-
-.title{
-  font-size:19px;
-  font-weight:800;
-  letter-spacing:.2px;
-}
-
-.mode{
-  display:flex;
-  gap:4px;
-  padding:4px;
-  border:1px solid var(--line);
-  border-radius:14px;
-  background:var(--panel);
-}
-
-.mode button{
-  border:0;
-  padding:9px 12px;
-  border-radius:10px;
-  background:transparent;
-  color:var(--muted);
-  font-weight:750;
-}
-
-.mode button.active{
-  color:var(--text);
-  background:var(--panel2);
-  box-shadow:0 3px 12px rgba(0,0,0,.22);
-}
-
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.title{font-size:19px;font-weight:800;letter-spacing:.2px}
+.mode{display:flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+.mode button{border:0;padding:9px 12px;border-radius:10px;background:transparent;color:var(--muted);font-weight:750}
+.mode button.active{color:var(--text);background:var(--panel2);box-shadow:0 3px 12px rgba(0,0,0,.22)}
 .stage{
-  position:relative;
-  min-height:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-  perspective:1200px;
-  touch-action:none;
-  user-select:none;
+  position:relative;min-height:0;display:flex;align-items:center;justify-content:center;
+  overflow:hidden;perspective:1200px;touch-action:none;user-select:none
 }
-
 .hint{
-  position:absolute;
-  top:4%;
-  left:50%;
-  transform:translateX(-50%);
-  width:min(92%,460px);
-  text-align:center;
-  color:var(--muted);
-  font-size:14px;
-  line-height:1.4;
-  pointer-events:none;
-  transition:opacity .2s;
+  position:absolute;top:4%;left:50%;transform:translateX(-50%);width:min(92%,460px);
+  text-align:center;color:var(--muted);font-size:14px;line-height:1.4;pointer-events:none;transition:opacity .2s
 }
-
 .score{
-  position:absolute;
-  top:13%;
-  left:50%;
-  transform:translateX(-50%);
-  opacity:0;
-  color:var(--muted);
-  font-size:14px;
-  font-weight:750;
-  pointer-events:none;
-  transition:opacity .2s;
+  position:absolute;top:13%;left:50%;transform:translateX(-50%);opacity:0;color:var(--muted);
+  font-size:14px;font-weight:750;pointer-events:none;transition:opacity .2s
 }
-
-.score.show{
-  opacity:1;
-}
-
+.score.show{opacity:1}
 .coin-wrap{
-  position:relative;
-  width:210px;
-  height:210px;
-  transform-style:preserve-3d;
-  will-change:transform;
-  cursor:grab;
+  position:relative;width:210px;height:210px;transform-style:preserve-3d;will-change:transform;cursor:grab
 }
-
-.coin-wrap.dragging{
-  cursor:grabbing;
-}
-
+.coin-wrap.dragging{cursor:grabbing}
 .coin{
-  position:relative;
-  width:100%;
-  height:100%;
-  border-radius:50%;
-  transform-style:preserve-3d;
-  will-change:transform;
+  position:relative;width:100%;height:100%;border-radius:50%;transform-style:preserve-3d;will-change:transform
 }
-
-.face,
-.edge{
-  position:absolute;
-  inset:0;
-  border-radius:50%;
-  backface-visibility:hidden;
-}
-
+.face,.edge{position:absolute;inset:0;border-radius:50%;backface-visibility:hidden}
 .face{
-  overflow:hidden;
-  border:3px solid #adb2ba;
-  background:#c8ccd2;
-
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,.5),
-    inset 0 0 14px rgba(0,0,0,.18),
-    0 18px 34px rgba(0,0,0,.42);
+  overflow:hidden;border:3px solid #adb2ba;background:#c8ccd2;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.5),inset 0 0 14px rgba(0,0,0,.18),0 18px 34px rgba(0,0,0,.42)
 }
-
-.heads{
-  transform:translateZ(8px);
-}
-
-.tails{
-  transform:
-    rotateY(180deg)
-    translateZ(8px);
-}
-
+.heads{transform:translateZ(8px)}
+.tails{transform:rotateY(180deg) translateZ(8px)}
 .quarter-photo{
-  display:block;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  border-radius:50%;
-  transform:scale(1.015);
-  filter:
-    contrast(1.05)
-    brightness(.98);
-  pointer-events:none;
-  user-select:none;
+  display:block;width:100%;height:100%;object-fit:cover;border-radius:50%;transform:scale(1.015);
+  filter:contrast(1.05) brightness(.98);pointer-events:none;user-select:none
 }
-
 .edge{
-  transform:translateZ(0);
-  border:8px solid #8e949d;
-
-  background:
-    repeating-linear-gradient(
-      90deg,
-      #666c74 0 1px,
-      #d8dbe0 1px 2px,
-      #838992 2px 3px,
-      #c3c7cd 3px 4px
-    );
-
-  box-shadow:
-    inset 0 0 8px rgba(0,0,0,.32);
+  transform:translateZ(0);border:8px solid #8e949d;
+  background:repeating-linear-gradient(90deg,#666c74 0 1px,#d8dbe0 1px 2px,#838992 2px 3px,#c3c7cd 3px 4px);
+  box-shadow:inset 0 0 8px rgba(0,0,0,.32)
 }
-
 .shadow{
-  position:absolute;
-  left:50%;
-  top:calc(50% + 135px);
-  width:150px;
-  height:34px;
-  transform:translateX(-50%);
-  border-radius:50%;
-
-  background:
-    radial-gradient(
-      ellipse,
-      rgba(0,0,0,.52),
-      rgba(0,0,0,0) 70%
-    );
-
-  filter:blur(6px);
-  opacity:.72;
-  pointer-events:none;
-  will-change:transform,opacity;
+  position:absolute;left:50%;top:calc(50% + 135px);width:132px;height:26px;transform:translateX(-50%);
+  border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.46),rgba(0,0,0,.13) 45%,rgba(0,0,0,0) 72%);
+  filter:blur(4px);opacity:.64;pointer-events:none;will-change:transform,opacity
 }
-
 .result{
-  position:absolute;
-  left:50%;
-  bottom:7%;
-  transform:
-    translateX(-50%)
-    translateY(8px);
-
-  opacity:0;
-  text-align:center;
-
-  font-size:28px;
-  font-weight:850;
-  letter-spacing:.5px;
-
-  pointer-events:none;
-
-  transition:
-    opacity .22s,
-    transform .22s;
+  position:absolute;left:50%;bottom:7%;transform:translateX(-50%) translateY(8px);opacity:0;text-align:center;
+  font-size:28px;font-weight:850;letter-spacing:.5px;pointer-events:none;transition:opacity .22s,transform .22s
 }
-
-.result.show{
-  opacity:1;
-
-  transform:
-    translateX(-50%)
-    translateY(0);
-}
-
-.result small{
-  display:block;
-  margin-top:5px;
-  color:var(--muted);
-  font-size:13px;
-  font-weight:700;
-}
-
-.controls{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:9px;
-}
-
+.result.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.result small{display:block;margin-top:5px;color:var(--muted);font-size:13px;font-weight:700}
+.controls{display:flex;justify-content:center;align-items:center;gap:9px}
 .pill{
-  min-width:0;
-  padding:13px 15px;
-
-  border:
-    1px solid
-    var(--line);
-
-  border-radius:16px;
-
-  background:var(--panel);
-  color:var(--text);
-
-  font-size:14px;
-  font-weight:800;
+  min-width:0;padding:13px 15px;border:1px solid var(--line);border-radius:16px;background:var(--panel);
+  color:var(--text);font-size:14px;font-weight:800
 }
-
-.pill.secondary{
-  color:var(--muted);
-}
-
-.pill:active{
-  transform:scale(.97);
-}
-
-.status{
-  min-height:17px;
-  margin-top:6px;
-  text-align:center;
-  color:var(--muted);
-  font-size:12px;
-}
-
+.pill.secondary{color:var(--muted)}
+.pill:active{transform:scale(.97)}
+.status{min-height:17px;margin-top:6px;text-align:center;color:var(--muted);font-size:12px}
 @media(max-height:650px){
-
-  .coin-wrap{
-    width:165px;
-    height:165px;
-  }
-
-  .shadow{
-    top:calc(50% + 107px);
-  }
-
-  .result{
-    bottom:2%;
-  }
-
-  .hint{
-    top:1%;
-  }
-
+  .coin-wrap{width:165px;height:165px}
+  .shadow{top:calc(50% + 107px)}
+  .result{bottom:2%}
+  .hint{top:1%}
 }
 </style>
 </head>
-
 <body>
-
 <div class="app">
-
   <header class="topbar">
-
-    <div class="title">
-      Coin Flip
-    </div>
-
+    <div class="title">Coin Flip</div>
     <div class="mode">
-
-      <button
-        id="singleBtn"
-        class="active"
-      >
-        Single
-      </button>
-
-      <button
-        id="bo3Btn"
-      >
-        Best of 3
-      </button>
-
+      <button id="singleBtn" class="active">Single</button>
+      <button id="bo3Btn">Best of 3</button>
     </div>
-
   </header>
 
+  <main class="stage" id="stage">
+    <div class="hint" id="hint">Flick it any direction, tap it, or shake your phone</div>
+    <div class="score" id="score">Heads 0 · Tails 0</div>
+    <div class="shadow" id="shadow"></div>
 
-  <main
-    class="stage"
-    id="stage"
-  >
-
-    <div
-      class="hint"
-      id="hint"
-    >
-      Flick it any direction, tap it, or shake your phone
-    </div>
-
-    <div
-      class="score"
-      id="score"
-    >
-      Heads 0 · Tails 0
-    </div>
-
-    <div
-      class="shadow"
-      id="shadow"
-    ></div>
-
-
-    <div
-      class="coin-wrap"
-      id="coinWrap"
-    >
-
-      <div
-        class="coin"
-        id="coin"
-      >
-
+    <div class="coin-wrap" id="coinWrap">
+      <div class="coin" id="coin">
         <div class="face heads">
-
-          <img
-            class="quarter-photo"
-            src="https://upload.wikimedia.org/wikipedia/commons/7/70/2021-P_US_Quarter_Obverse.jpg"
-            alt="Heads"
-            draggable="false"
-          >
-
+          <img class="quarter-photo" src="https://upload.wikimedia.org/wikipedia/commons/7/70/2021-P_US_Quarter_Obverse.jpg" alt="Heads" draggable="false">
         </div>
-
-
         <div class="face tails">
-
-          <img
-            class="quarter-photo"
-            src="https://upload.wikimedia.org/wikipedia/commons/e/eb/United_States_Quarter_Reverse_2021.jpg"
-            alt="Tails"
-            draggable="false"
-          >
-
+          <img class="quarter-photo" src="https://upload.wikimedia.org/wikipedia/commons/e/eb/United_States_Quarter_Reverse_2021.jpg" alt="Tails" draggable="false">
         </div>
-
-
         <div class="edge"></div>
-
       </div>
-
     </div>
 
-
-    <div
-      class="result"
-      id="result"
-    ></div>
-
+    <div class="result" id="result"></div>
   </main>
 
-
   <footer>
-
     <div class="controls">
-
-      <button
-        class="pill secondary"
-        id="motionBtn"
-      >
-        Enable Shake
-      </button>
-
-      <button
-        class="pill"
-        id="flipBtn"
-      >
-        Flip
-      </button>
-
-      <button
-        class="pill secondary"
-        id="soundBtn"
-      >
-        Sound On
-      </button>
-
+      <button class="pill secondary" id="motionBtn">Enable Shake</button>
+      <button class="pill" id="flipBtn">Flip</button>
+      <button class="pill secondary" id="soundBtn">Sound On</button>
     </div>
-
-
-    <div
-      class="status"
-      id="status"
-    >
-      Secure 50/50 randomness
-    </div>
-
+    <div class="status" id="status">Secure 50/50 randomness</div>
   </footer>
-
 </div>
-
 
 <script>
 (() => {
-
 'use strict';
 
+const stage = document.getElementById('stage');
+const titleEl = document.querySelector('.title');
+const coinWrap = document.getElementById('coinWrap');
+const coin = document.getElementById('coin');
+const shadow = document.getElementById('shadow');
+const resultEl = document.getElementById('result');
+const scoreEl = document.getElementById('score');
+const hint = document.getElementById('hint');
+const singleBtn = document.getElementById('singleBtn');
+const bo3Btn = document.getElementById('bo3Btn');
+const motionBtn = document.getElementById('motionBtn');
+const flipBtn = document.getElementById('flipBtn');
+const soundBtn = document.getElementById('soundBtn');
+const statusEl = document.getElementById('status');
 
-const stage =
-  document.getElementById(
-    'stage'
-  );
+let mode = 'single';
+let flipping = false;
+let soundOn = true;
+let audioCtx = null;
+let currentFace = 'heads';
+let coinPos = {x:0,y:0};
+let series = {heads:0,tails:0};
 
-const coinWrap =
-  document.getElementById(
-    'coinWrap'
-  );
-
-const coin =
-  document.getElementById(
-    'coin'
-  );
-
-const shadow =
-  document.getElementById(
-    'shadow'
-  );
-
-const resultEl =
-  document.getElementById(
-    'result'
-  );
-
-const scoreEl =
-  document.getElementById(
-    'score'
-  );
-
-const hint =
-  document.getElementById(
-    'hint'
-  );
-
-const singleBtn =
-  document.getElementById(
-    'singleBtn'
-  );
-
-const bo3Btn =
-  document.getElementById(
-    'bo3Btn'
-  );
-
-const motionBtn =
-  document.getElementById(
-    'motionBtn'
-  );
-
-const flipBtn =
-  document.getElementById(
-    'flipBtn'
-  );
-
-const soundBtn =
-  document.getElementById(
-    'soundBtn'
-  );
-
-const statusEl =
-  document.getElementById(
-    'status'
-  );
-
-
-let mode =
-  'single';
-
-let flipping =
-  false;
-
-let soundOn =
-  true;
-
-let audioCtx =
-  null;
-
-let currentFace =
-  'heads';
-
-
-let coinPos = {
-  x:0,
-  y:0
-};
-
-
-let series = {
-  heads:0,
-  tails:0
-};
-
-
-/*
-  SECURE RANDOMNESS
-*/
-
+/* ---------- Secure randomness ---------- */
 function secureBit(){
-
-  const a =
-    new Uint32Array(1);
-
-  crypto.getRandomValues(
-    a
-  );
-
-
-  return (
-    (a[0] & 1) === 0
-      ? 'heads'
-      : 'tails'
-  );
-
+  const a = new Uint32Array(1);
+  crypto.getRandomValues(a);
+  return (a[0] & 1) === 0 ? 'heads' : 'tails';
 }
 
-
-function secureFloat(
-  min,
-  max
-){
-
-  const a =
-    new Uint32Array(1);
-
-
-  crypto.getRandomValues(
-    a
-  );
-
-
-  return (
-    min +
-    (
-      a[0] /
-      4294967295
-    ) *
-    (
-      max -
-      min
-    )
-  );
-
+function secureFloat(min,max){
+  const a = new Uint32Array(1);
+  crypto.getRandomValues(a);
+  return min + (a[0] / 4294967295) * (max-min);
 }
 
-
-function clamp(
-  value,
-  min,
-  max
-){
-
-  return Math.max(
-    min,
-    Math.min(
-      max,
-      value
-    )
-  );
-
+function clamp(value,min,max){
+  return Math.max(min,Math.min(max,value));
 }
-
 
 function wait(ms){
-
-  return new Promise(
-    resolve =>
-      setTimeout(
-        resolve,
-        ms
-      )
-  );
-
+  return new Promise(resolve => setTimeout(resolve,ms));
 }
 
+/* ---------- Sound / haptics ---------- */
+const COIN_IMPACT_URL = 'https://upload.wikimedia.org/wikipedia/commons/c/c5/Coin_dropped_on_wooden_floor.ogg';
+let audioWarmed = false;
+let impactPoolIndex = 0;
 
-/*
-  SOUND + HAPTICS
-*/
+const impactPool = Array.from({length:5},() => {
+  const a = new Audio(COIN_IMPACT_URL);
+  a.preload = 'auto';
+  a.playsInline = true;
+  return a;
+});
 
 function ensureAudio(){
-
   if(!audioCtx){
-
-    audioCtx =
-      new (
-        window.AudioContext ||
-        window.webkitAudioContext
-      )();
-
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   }
 
-
-  if(
-    audioCtx.state ===
-    'suspended'
-  ){
-
-    audioCtx.resume();
-
+  if(audioCtx.state==='suspended'){
+    audioCtx.resume().catch(() => {});
   }
-
 }
 
+function warmAudio(){
+  if(audioWarmed) return;
 
-function tone(
-  frequency,
-  duration,
-  gain=.04,
-  delay=0,
-  type='sine'
-){
+  audioWarmed = true;
 
-  if(!soundOn){
-    return;
-  }
+  try{
+    ensureAudio();
+  }catch(_){}
 
-
-  ensureAudio();
-
-
-  const start =
-    audioCtx.currentTime +
-    delay;
-
-
-  const oscillator =
-    audioCtx.createOscillator();
-
-
-  const volume =
-    audioCtx.createGain();
-
-
-  const filter =
-    audioCtx.createBiquadFilter();
-
-
-  oscillator.type =
-    type;
-
-
-  oscillator.frequency
-    .setValueAtTime(
-      frequency,
-      start
-    );
-
-
-  oscillator.frequency
-    .exponentialRampToValueAtTime(
-      Math.max(
-        80,
-        frequency*.80
-      ),
-      start + duration
-    );
-
-
-  filter.type =
-    'bandpass';
-
-
-  filter.frequency.value =
-    frequency;
-
-
-  filter.Q.value =
-    4.2;
-
-
-  volume.gain
-    .setValueAtTime(
-      Math.max(
-        .0001,
-        gain
-      ),
-      start
-    );
-
-
-  volume.gain
-    .exponentialRampToValueAtTime(
-      .0001,
-      start + duration
-    );
-
-
-  oscillator
-    .connect(filter)
-    .connect(volume)
-    .connect(
-      audioCtx.destination
-    );
-
-
-  oscillator.start(
-    start
-  );
-
-
-  oscillator.stop(
-    start +
-    duration +
-    .03
-  );
-
+  impactPool.forEach(a => {
+    try{
+      a.load();
+    }catch(_){}
+  });
 }
 
+/* Tiny synthetic fallback only if the real recording cannot play. */
+function fallbackMetalTick(intensity=1){
+  if(!soundOn) return;
 
-function noiseTick(
-  duration=.03,
-  gain=.025,
-  delay=0
-){
+  try{
+    ensureAudio();
 
-  if(!soundOn){
-    return;
-  }
+    const now = audioCtx.currentTime;
 
+    [760,1280,1840].forEach((freq,i) => {
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
 
-  ensureAudio();
+      o.type = 'sine';
+      o.frequency.value = freq * secureFloat(.97,1.03);
 
-
-  const sampleRate =
-    audioCtx.sampleRate;
-
-
-  const buffer =
-    audioCtx.createBuffer(
-      1,
-      Math.max(
-        1,
-        Math.floor(
-          sampleRate *
-          duration
-        )
-      ),
-      sampleRate
-    );
-
-
-  const data =
-    buffer.getChannelData(
-      0
-    );
-
-
-  for(
-    let i=0;
-    i<data.length;
-    i++
-  ){
-
-    data[i] =
-      secureFloat(
-        -1,
-        1
-      ) *
-      Math.pow(
-        1 -
-        i/data.length,
-        2.4
+      g.gain.setValueAtTime(
+        .018*intensity/(i+1),
+        now+i*.004
       );
 
+      g.gain.exponentialRampToValueAtTime(
+        .0001,
+        now+.055+i*.012
+      );
+
+      o.connect(g).connect(audioCtx.destination);
+
+      o.start(now+i*.004);
+      o.stop(now+.08+i*.012);
+    });
+  }catch(_){}
+}
+
+function playCoinImpact(intensity=1,secondary=false){
+  if(!soundOn) return;
+
+  warmAudio();
+
+  const a = impactPool[
+    impactPoolIndex++ %
+    impactPool.length
+  ];
+
+  try{
+    a.pause();
+    a.currentTime = 0;
+
+    a.playbackRate = secondary
+      ? secureFloat(1.06,1.15)
+      : secureFloat(.96,1.045);
+
+    a.volume = clamp(
+      secondary
+        ? .10 + intensity*.10
+        : .26 + intensity*.24,
+      0,
+      secondary ? .28 : .62
+    );
+
+    const promise = a.play();
+
+    if(promise?.catch){
+      promise.catch(() =>
+        fallbackMetalTick(
+          intensity *
+          (secondary ? .45 : 1)
+        )
+      );
+    }
+  }catch(_){
+    fallbackMetalTick(
+      intensity *
+      (secondary ? .45 : 1)
+    );
   }
-
-
-  const source =
-    audioCtx
-      .createBufferSource();
-
-
-  const highpass =
-    audioCtx
-      .createBiquadFilter();
-
-
-  const volume =
-    audioCtx
-      .createGain();
-
-
-  source.buffer =
-    buffer;
-
-
-  highpass.type =
-    'highpass';
-
-
-  highpass.frequency.value =
-    1700;
-
-
-  volume.gain.value =
-    gain;
-
-
-  source
-    .connect(highpass)
-    .connect(volume)
-    .connect(
-      audioCtx.destination
-    );
-
-
-  source.start(
-    audioCtx.currentTime +
-    delay
-  );
-
 }
 
-
-function launchSound(){
-
-  noiseTick(
-    .018,
-    .012
-  );
-
-
-  tone(
-    170,
-    .07,
-    .013,
-    0,
-    'triangle'
-  );
-
-}
-
-
-function clink(
-  intensity=1
-){
-
-  const pitch =
-    secureFloat(
-      .93,
-      1.08
-    );
-
-
-  noiseTick(
-    .028,
-    .027 *
-    intensity
-  );
-
-
-  tone(
-    520*pitch,
-    .11,
-    .040*intensity
-  );
-
-
-  tone(
-    970*pitch,
-    .078,
-    .026*intensity,
-    .006
-  );
-
-
-  tone(
-    1480*pitch,
-    .055,
-    .016*intensity,
-    .012
-  );
-
-
-  tone(
-    275*pitch,
-    .13,
-    .015*intensity,
-    .018,
-    'triangle'
-  );
-
-}
-
-
-function vibrate(
-  pattern
-){
-
-  if(
-    navigator.vibrate
-  ){
-
-    navigator.vibrate(
-      pattern
-    );
-
+function vibrate(pattern){
+  if(navigator.vibrate){
+    navigator.vibrate(pattern);
   }
-
 }
 
-
-/*
-  UI
-*/
-
+/* ---------- UI ---------- */
 function clearResult(){
-
-  resultEl
-    .classList
-    .remove(
-      'show'
-    );
-
+  resultEl.classList.remove('show');
 }
 
-
-function showResult(
-  text,
-  sub=''
-){
-
+function showResult(text,sub=''){
   resultEl.innerHTML =
     `${text.toUpperCase()}${
       sub
@@ -1026,317 +327,218 @@ function showResult(
         : ''
     }`;
 
-
-  resultEl
-    .classList
-    .add(
-      'show'
-    );
-
+  resultEl.classList.add('show');
 }
-
 
 function updateScore(){
-
   scoreEl.textContent =
     `Heads ${series.heads} · Tails ${series.tails}`;
-
 }
 
+function setMode(newMode){
+  if(flipping) return;
 
-function setMode(
-  newMode
-){
+  mode = newMode;
 
-  if(flipping){
-    return;
-  }
+  singleBtn.classList.toggle(
+    'active',
+    mode==='single'
+  );
 
+  bo3Btn.classList.toggle(
+    'active',
+    mode==='bo3'
+  );
 
-  mode =
-    newMode;
-
-
-  singleBtn
-    .classList
-    .toggle(
-      'active',
-      mode ===
-      'single'
-    );
-
-
-  bo3Btn
-    .classList
-    .toggle(
-      'active',
-      mode ===
-      'bo3'
-    );
-
-
-  scoreEl
-    .classList
-    .toggle(
-      'show',
-      mode ===
-      'bo3'
-    );
-
+  scoreEl.classList.toggle(
+    'show',
+    mode==='bo3'
+  );
 
   series = {
     heads:0,
     tails:0
   };
 
-
   updateScore();
-
   clearResult();
-
 }
 
-
-/*
-  COIN POSITION
-*/
-
+/* ---------- Coin position ---------- */
 function stageLimits(){
-
   const stageRect =
-    stage
-      .getBoundingClientRect();
-
+    stage.getBoundingClientRect();
 
   const coinRect =
-    coinWrap
-      .getBoundingClientRect();
-
+    coinWrap.getBoundingClientRect();
 
   const radius =
     Math.min(
       coinRect.width,
       coinRect.height
-    ) / 2;
-
+    )/2;
 
   return {
-
-    x:
-      Math.max(
-        20,
-        stageRect.width/2 -
-        radius -
-        18
-      ),
-
-    y:
-      Math.max(
-        20,
-        stageRect.height/2 -
-        radius -
-        48
-      )
-
+    x:Math.max(
+      20,
+      stageRect.width/2-radius-18
+    ),
+    y:Math.max(
+      20,
+      stageRect.height/2-radius-48
+    )
   };
-
 }
 
-
 function setRestingPosition(){
-
   coinWrap.style.transform =
-    `translate3d(
-      ${coinPos.x}px,
-      ${coinPos.y}px,
-      0
-    )`;
-
+    `translate3d(${coinPos.x}px,${coinPos.y}px,0)`;
 
   coin.style.transform =
     `rotateY(${
-      currentFace ===
-      'tails'
+      currentFace==='tails'
         ? 180
         : 0
-    }deg)`;
-
+    }deg) scale(1)`;
 
   shadow.style.transform =
     `translate(
-      calc(
-        -50% +
-        ${coinPos.x}px
-      ),
+      calc(-50% + ${coinPos.x}px),
       ${coinPos.y}px
-    )`;
+    ) scale(1)`;
 
-
-  shadow.style.opacity =
-    '.72';
-
+  shadow.style.opacity = '.64';
 }
-
 
 function cancelAnimations(){
-
-  [
-    coinWrap,
-    coin,
-    shadow
-  ]
-  .forEach(
-    element => {
-
-      element
-        .getAnimations()
-        .forEach(
-          animation =>
-            animation.cancel()
-        );
-
-    }
-  );
-
+  [coinWrap,coin,shadow].forEach(element => {
+    element
+      .getAnimations()
+      .forEach(animation =>
+        animation.cancel()
+      );
+  });
 }
 
+function clampCoinToStage(){
+  const limits = stageLimits();
 
-/*
-  ERROR FAILSAFE
-
-  This prevents another bug from
-  leaving flipping=true forever.
-*/
-
-function unlockAfterError(
-  error
-){
-
-  console.error(
-    error
-  );
-
-
-  flipping =
-    false;
-
-
-  hint.style.opacity =
-    '1';
-
-
-  coinWrap
-    .classList
-    .remove(
-      'dragging'
+  const nextX =
+    clamp(
+      coinPos.x,
+      -limits.x,
+      limits.x
     );
 
+  const nextY =
+    clamp(
+      coinPos.y,
+      -limits.y,
+      limits.y
+    );
 
-  try{
-
-    cancelAnimations();
-
-    setRestingPosition();
-
-  }
-  catch(_){}
-
-
-  statusEl.textContent =
-    'Recovered from an animation error · try again';
-
-}
-
-
-/*
-  PHYSICAL FLIP
-*/
-
-async function doFlip(
-  gesture={}
-){
-
-  if(flipping){
+  if(
+    nextX===coinPos.x &&
+    nextY===coinPos.y
+  ){
     return;
   }
 
+  coinPos.x = nextX;
+  coinPos.y = nextY;
 
-  flipping =
-    true;
+  cancelAnimations();
+  setRestingPosition();
+}
 
+function recenterCoin(){
+  if(flipping) return;
+
+  coinPos = {
+    x:0,
+    y:0
+  };
+
+  cancelAnimations();
+  setRestingPosition();
+  clearResult();
+
+  statusEl.textContent =
+    motionEnabled
+      ? 'Shake ready · directional motion connected'
+      : 'Secure 50/50 randomness';
+
+  vibrate(12);
+}
+
+function unlockAfterError(error){
+  console.error(error);
+
+  flipping = false;
+  hint.style.opacity = '1';
+
+  coinWrap
+    .classList
+    .remove('dragging');
+
+  try{
+    cancelAnimations();
+    clampCoinToStage();
+    setRestingPosition();
+  }catch(_){}
+
+  statusEl.textContent =
+    'Recovered from an animation error · try again';
+}
+
+/* ---------- Physical flip ---------- */
+async function doFlip(gesture={}){
+  if(flipping) return;
+
+  flipping = true;
 
   clearResult();
 
-
-  hint.style.opacity =
-    '.15';
-
+  hint.style.opacity = '.15';
 
   try{
-
+    warmAudio();
     cancelAnimations();
-
+    clampCoinToStage();
     setRestingPosition();
 
-
-    /*
-      CRYPTO CHOOSES HEADS/TAILS
-      BEFORE MOTION IS CALCULATED.
-    */
-
-    const outcome =
-      secureBit();
-
+    /* Crypto chooses the face before gesture physics is calculated. */
+    const outcome = secureBit();
 
     let vx =
       Number(
         gesture.vx || 0
       );
 
-
     let vy =
       Number(
         gesture.vy || 0
       );
 
-
-    /*
-      Button / fallback flips get
-      a natural random direction.
-    */
-
     if(
-      Math.abs(vx) < .01 &&
-      Math.abs(vy) < .01
+      Math.abs(vx)<.01 &&
+      Math.abs(vy)<.01
     ){
-
       const angle =
         secureFloat(
           0,
           Math.PI*2
         );
 
-
-      vx =
-        Math.cos(
-          angle
-        );
-
-
-      vy =
-        Math.sin(
-          angle
-        );
-
+      vx = Math.cos(angle);
+      vy = Math.sin(angle);
     }
-
 
     const velocity =
       Math.hypot(
         vx,
         vy
       );
-
 
     const dirX =
       vx /
@@ -1345,7 +547,6 @@ async function doFlip(
         .001
       );
 
-
     const dirY =
       vy /
       Math.max(
@@ -1353,21 +554,17 @@ async function doFlip(
         .001
       );
 
-
     const strength =
       clamp(
         Number(
-          gesture.strength ||
-          1
+          gesture.strength || 1
         ),
         .65,
         2.4
       );
 
-
     const limits =
       stageLimits();
-
 
     const upwardAmount =
       clamp(
@@ -1376,7 +573,6 @@ async function doFlip(
         1
       );
 
-
     const downwardAmount =
       clamp(
         dirY,
@@ -1384,12 +580,10 @@ async function doFlip(
         1
       );
 
-
     const sidewaysAmount =
       Math.abs(
         dirX
       );
-
 
     let travelX =
       dirX *
@@ -1398,7 +592,6 @@ async function doFlip(
         strength*95
       );
 
-
     let travelY =
       dirY *
       (
@@ -1406,19 +599,10 @@ async function doFlip(
         strength*48
       );
 
-
-    /*
-      SIDEWAYS
-
-      Wide horizontal travel,
-      smaller hop.
-    */
-
     if(
-      sidewaysAmount > .72 &&
-      Math.abs(dirY) < .55
+      sidewaysAmount>.72 &&
+      Math.abs(dirY)<.55
     ){
-
       travelX =
         dirX *
         (
@@ -1426,97 +610,116 @@ async function doFlip(
           strength*115
         );
 
-
       travelY =
         dirY *
         (
           22 +
           strength*25
         );
-
     }
 
-
-    /*
-      DOWNWARD
-
-      Preserve the dive.
-    */
-
     if(
-      downwardAmount > .58
+      downwardAmount>.58
     ){
-
       travelY =
         dirY *
         (
           70 +
           strength*75
         );
-
     }
 
-
-    /*
-      UPWARD
-
-      Traditional high toss.
-    */
-
     if(
-      upwardAmount > .58
+      upwardAmount>.58
     ){
-
       travelY =
         dirY *
         (
           75 +
           strength*90
         );
-
     }
-
 
     const startX =
       coinPos.x;
 
-
     const startY =
       coinPos.y;
 
+    /*
+      Gentle center bias only
+      when already near an edge.
+    */
+    const edgeRatioX =
+      Math.abs(startX) /
+      Math.max(
+        1,
+        limits.x
+      );
+
+    const edgeRatioY =
+      Math.abs(startY) /
+      Math.max(
+        1,
+        limits.y
+      );
+
+    if(edgeRatioX>.72){
+      travelX +=
+        -Math.sign(startX) *
+        (edgeRatioX-.72) *
+        70;
+    }
+
+    if(edgeRatioY>.72){
+      travelY +=
+        -Math.sign(startY) *
+        (edgeRatioY-.72) *
+        55;
+    }
+
+    const rawTargetX =
+      startX +
+      travelX;
+
+    const rawTargetY =
+      startY +
+      travelY;
+
+    const hitEdgeX =
+      rawTargetX < -limits.x ||
+      rawTargetX > limits.x;
+
+    const hitEdgeY =
+      rawTargetY < -limits.y ||
+      rawTargetY > limits.y;
+
+    const hitEdge =
+      hitEdgeX ||
+      hitEdgeY;
 
     const targetX =
       clamp(
-        startX +
-        travelX,
+        rawTargetX,
         -limits.x,
         limits.x
       );
 
-
     const targetY =
       clamp(
-        startY +
-        travelY,
+        rawTargetY,
         -limits.y,
         limits.y
       );
 
-
-    /*
-      SPIN
-    */
-
     const contactBias =
       clamp(
         Number(
-          gesture.spinBias ||
-          0
+          gesture.spinBias || 0
         ),
         -1,
         1
       );
-
 
     let spinDirection =
       Math.sign(
@@ -1524,11 +727,9 @@ async function doFlip(
         contactBias
       );
 
-
     if(
-      spinDirection === 0
+      spinDirection===0
     ){
-
       spinDirection =
         secureFloat(
           0,
@@ -1536,16 +737,12 @@ async function doFlip(
         ) < .5
           ? -1
           : 1;
-
     }
 
-
     const startRotation =
-      currentFace ===
-      'tails'
+      currentFace==='tails'
         ? 180
         : 0;
-
 
     const turns =
       Math.round(
@@ -1556,13 +753,10 @@ async function doFlip(
         strength*1.7
       );
 
-
     const faceChange =
-      outcome ===
-      currentFace
+      outcome===currentFace
         ? 0
         : 180;
-
 
     const endRotation =
       startRotation +
@@ -1572,40 +766,34 @@ async function doFlip(
         faceChange
       );
 
-
     const duration =
       clamp(
-        980 +
-        strength*260 +
+        960 +
+        strength*250 +
         secureFloat(
-          -100,
-          130
+          -90,
+          120
         ),
-        1000,
-        1700
+        980,
+        1660
       );
 
-
-    let path;
-
-
     /*
-      DOWNWARD PATH
-
-      Dive → rebound → settle.
+      Structured points keep
+      coin and shadow on the
+      exact same X/Y path.
     */
+    let points;
 
     if(
-      downwardAmount > .58
+      downwardAmount>.58
     ){
-
       const diveX =
         startX +
         (
           targetX -
           startX
         )*.66;
-
 
       const diveY =
         clamp(
@@ -1618,7 +806,6 @@ async function doFlip(
           limits.y
         );
 
-
       const reboundY =
         clamp(
           targetY -
@@ -1630,67 +817,49 @@ async function doFlip(
           limits.y
         );
 
-
-      path = [
-
+      points = [
         {
-          transform:
-            `translate3d(
-              ${startX}px,
-              ${startY}px,
-              0
-            )`,
-          offset:0
+          x:startX,
+          y:startY,
+          offset:0,
+          shadowScale:1,
+          shadowOpacity:.64,
+          coinScale:1
         },
-
         {
-          transform:
-            `translate3d(
-              ${diveX}px,
-              ${diveY}px,
-              0
-            )`,
-          offset:.38
+          x:diveX,
+          y:diveY,
+          offset:.38,
+          shadowScale:.78,
+          shadowOpacity:.42,
+          coinScale:1.035
         },
-
         {
-          transform:
-            `translate3d(
-              ${targetX}px,
-              ${reboundY}px,
-              0
-            )`,
-          offset:.68
+          x:targetX,
+          y:reboundY,
+          offset:.68,
+          shadowScale:.84,
+          shadowOpacity:.48,
+          coinScale:1.025
         },
-
         {
-          transform:
-            `translate3d(
-              ${targetX}px,
-              ${targetY}px,
-              0
-            )`,
-          offset:1
+          x:targetX,
+          y:targetY,
+          offset:1,
+          shadowScale:1,
+          shadowOpacity:.64,
+          coinScale:1
         }
-
       ];
-
     }
 
-
-    /*
-      SIDEWAYS PATH
-    */
-
     else if(
-      sidewaysAmount > .72 &&
-      Math.abs(dirY) < .55
+      sidewaysAmount>.72 &&
+      Math.abs(dirY)<.55
     ){
-
       const hop =
         38 +
         strength*28;
-
 
       const midX =
         startX +
@@ -1699,65 +868,47 @@ async function doFlip(
           startX
         )*.53;
 
-
       const midY =
         clamp(
-          startY -
-          hop,
+          startY-hop,
           -limits.y,
           limits.y
         );
 
-
-      path = [
-
+      points = [
         {
-          transform:
-            `translate3d(
-              ${startX}px,
-              ${startY}px,
-              0
-            )`,
-          offset:0
+          x:startX,
+          y:startY,
+          offset:0,
+          shadowScale:1,
+          shadowOpacity:.64,
+          coinScale:1
         },
-
         {
-          transform:
-            `translate3d(
-              ${midX}px,
-              ${midY}px,
-              0
-            )`,
-          offset:.47
+          x:midX,
+          y:midY,
+          offset:.47,
+          shadowScale:.72,
+          shadowOpacity:.36,
+          coinScale:1.045
         },
-
         {
-          transform:
-            `translate3d(
-              ${targetX}px,
-              ${targetY}px,
-              0
-            )`,
-          offset:1
+          x:targetX,
+          y:targetY,
+          offset:1,
+          shadowScale:1,
+          shadowOpacity:.64,
+          coinScale:1
         }
-
       ];
-
     }
 
-
-    /*
-      UPWARD PATH
-    */
-
     else if(
-      upwardAmount > .58
+      upwardAmount>.58
     ){
-
       const rise =
         125 +
         strength*85;
-
 
       const apexX =
         startX +
@@ -1766,69 +917,47 @@ async function doFlip(
           startX
         )*.42;
 
-
       const apexY =
         clamp(
-          startY -
-          rise,
+          startY-rise,
           -limits.y,
           limits.y
         );
 
-
-      path = [
-
+      points = [
         {
-          transform:
-            `translate3d(
-              ${startX}px,
-              ${startY}px,
-              0
-            )`,
-          offset:0
+          x:startX,
+          y:startY,
+          offset:0,
+          shadowScale:1,
+          shadowOpacity:.64,
+          coinScale:1
         },
-
         {
-          transform:
-            `translate3d(
-              ${apexX}px,
-              ${apexY}px,
-              0
-            )`,
-          offset:.46
+          x:apexX,
+          y:apexY,
+          offset:.46,
+          shadowScale:.48,
+          shadowOpacity:.18,
+          coinScale:1.07
         },
-
         {
-          transform:
-            `translate3d(
-              ${targetX}px,
-              ${targetY}px,
-              0
-            )`,
-          offset:1
+          x:targetX,
+          y:targetY,
+          offset:1,
+          shadowScale:1,
+          shadowOpacity:.64,
+          coinScale:1
         }
-
       ];
-
     }
 
-
-    /*
-      DIAGONAL PATH
-
-      Follows gesture instead of
-      forcing a vertical arc.
-    */
-
     else{
-
       const perpendicularX =
         -dirY;
 
-
       const perpendicularY =
         dirX;
-
 
       const arcStrength =
         secureFloat(
@@ -1840,7 +969,6 @@ async function doFlip(
           strength*.25
         );
 
-
       const midX =
         startX +
         (
@@ -1849,7 +977,6 @@ async function doFlip(
         )*.52 +
         perpendicularX *
         arcStrength;
-
 
       const midY =
         startY +
@@ -1860,46 +987,61 @@ async function doFlip(
         perpendicularY *
         arcStrength;
 
-
-      path = [
-
+      points = [
         {
-          transform:
-            `translate3d(
-              ${startX}px,
-              ${startY}px,
-              0
-            )`,
-          offset:0
+          x:startX,
+          y:startY,
+          offset:0,
+          shadowScale:1,
+          shadowOpacity:.64,
+          coinScale:1
         },
-
         {
-          transform:
-            `translate3d(
-              ${midX}px,
-              ${midY}px,
-              0
-            )`,
-          offset:.5
+          x:midX,
+          y:midY,
+          offset:.5,
+          shadowScale:.66,
+          shadowOpacity:.32,
+          coinScale:1.05
         },
-
         {
-          transform:
-            `translate3d(
-              ${targetX}px,
-              ${targetY}px,
-              0
-            )`,
-          offset:1
+          x:targetX,
+          y:targetY,
+          offset:1,
+          shadowScale:1,
+          shadowOpacity:.64,
+          coinScale:1
         }
-
       ];
-
     }
 
+    const travelFrames =
+      points.map(p => ({
+        transform:
+          `translate3d(
+            ${p.x}px,
+            ${p.y}px,
+            0
+          )`,
+        offset:p.offset
+      }));
+
+    const shadowFrames =
+      points.map(p => ({
+        transform:
+          `translate(
+            calc(-50% + ${p.x}px),
+            ${p.y}px
+          )
+          scale(${p.shadowScale})`,
+        opacity:
+          p.shadowOpacity,
+        offset:
+          p.offset
+      }));
 
     coinWrap.animate(
-      path,
+      travelFrames,
       {
         duration,
         easing:
@@ -1908,13 +1050,21 @@ async function doFlip(
       }
     );
 
+    shadow.animate(
+      shadowFrames,
+      {
+        duration,
+        easing:
+          'cubic-bezier(.16,.68,.22,1)',
+        fill:'forwards'
+      }
+    );
 
     const wobbleX =
       secureFloat(
         -48,
         48
       );
-
 
     const wobbleZ =
       clamp(
@@ -1928,70 +1078,60 @@ async function doFlip(
         55
       );
 
+    const midScale =
+      Math.max(
+        ...points.map(
+          p =>
+            p.coinScale || 1
+        )
+      );
 
     coin.animate(
       [
-
         {
           transform:
-            `rotateY(
-              ${startRotation}deg
-            )
-            rotateX(0deg)
-            rotateZ(0deg)`,
+            `rotateY(${startRotation}deg)
+             rotateX(0deg)
+             rotateZ(0deg)
+             scale(1)`,
           offset:0
         },
-
         {
           transform:
-            `rotateY(
-              ${
-                startRotation +
-                (
-                  endRotation -
-                  startRotation
-                )*.48
-              }deg
-            )
-            rotateX(
-              ${wobbleX}deg
-            )
-            rotateZ(
-              ${wobbleZ}deg
-            )`,
+            `rotateY(${
+              startRotation +
+              (
+                endRotation -
+                startRotation
+              )*.48
+            }deg)
+             rotateX(${wobbleX}deg)
+             rotateZ(${wobbleZ}deg)
+             scale(${midScale})`,
           offset:.48
         },
-
         {
           transform:
-            `rotateY(
-              ${
-                startRotation +
-                (
-                  endRotation -
-                  startRotation
-                )*.90
-              }deg
-            )
-            rotateX(
-              ${wobbleX*.16}deg
-            )
-            rotateZ(
-              ${wobbleZ*.12}deg
-            )`,
+            `rotateY(${
+              startRotation +
+              (
+                endRotation -
+                startRotation
+              )*.90
+            }deg)
+             rotateX(${wobbleX*.16}deg)
+             rotateZ(${wobbleZ*.12}deg)
+             scale(1.015)`,
           offset:.89
         },
-
         {
           transform:
-            `rotateY(
-              ${endRotation}deg
-            )
-            rotateX(0deg)
-            rotateZ(0deg)`,
+            `rotateY(${endRotation}deg)
+             rotateX(0deg)
+             rotateZ(0deg)
+             scale(1)`,
           offset:1
         }
-
       ],
       {
         duration,
@@ -2001,346 +1141,337 @@ async function doFlip(
       }
     );
 
-
-    const shadowMidX =
-      startX +
-      (
-        targetX -
-        startX
-      )*.5;
-
-
-    const shadowMidY =
-      startY +
-      (
-        targetY -
-        startY
-      )*.5;
-
-
-    const highThrow =
-      upwardAmount > .58;
-
-
-    shadow.animate(
-      [
-
-        {
-          transform:
-            `translate(
-              calc(
-                -50% +
-                ${startX}px
-              ),
-              ${startY}px
-            )
-            scale(1)`,
-          opacity:.72
-        },
-
-        {
-          transform:
-            `translate(
-              calc(
-                -50% +
-                ${shadowMidX}px
-              ),
-              ${shadowMidY}px
-            )
-            scale(
-              ${
-                highThrow
-                  ? .48
-                  : .70
-              }
-            )`,
-          opacity:
-            highThrow
-              ? .20
-              : .40,
-          offset:.5
-        },
-
-        {
-          transform:
-            `translate(
-              calc(
-                -50% +
-                ${targetX}px
-              ),
-              ${targetY}px
-            )
-            scale(1)`,
-          opacity:.72
-        }
-
-      ],
-      {
-        duration,
-        easing:
-          'ease-in-out',
-        fill:'forwards'
-      }
-    );
-
-
-    launchSound();
-
-
     await wait(
       duration*.87
     );
 
-
-    clink(
+    playCoinImpact(
       clamp(
-        .85 +
-        strength*.20,
+        .82 +
+        strength*.18,
         .85,
-        1.4
-      )
+        1.25
+      ),
+      false
     );
-
 
     vibrate(
       [
         20,
-        28,
+        26,
         10
       ]
     );
-
 
     await wait(
       duration*.13
     );
 
-
-    /*
-      LANDING BOUNCE
-    */
-
-    const bounceDistance =
-      5 +
-      strength*3;
-
-
-    const bounceX =
-      clamp(
-        targetX +
-        dirX*bounceDistance,
-        -limits.x,
-        limits.x
-      );
-
-
-    const bounceY =
-      clamp(
-        targetY -
-        (
-          8 +
-          strength*5
-        ),
-        -limits.y,
-        limits.y
-      );
-
-
-    coinWrap.animate(
-      [
-
-        {
-          transform:
-            `translate3d(
-              ${targetX}px,
-              ${targetY}px,
-              0
-            )`
-        },
-
-        {
-          transform:
-            `translate3d(
-              ${bounceX}px,
-              ${bounceY}px,
-              0
-            )`,
-          offset:.35
-        },
-
-        {
-          transform:
-            `translate3d(
-              ${targetX}px,
-              ${targetY}px,
-              0
-            )`
-        }
-
-      ],
-      {
-        duration:250,
-        easing:'ease-out',
-        fill:'forwards'
-      }
-    );
-
-
-    if(
-      strength > 1.25
-    ){
-
-      await wait(
-        95
-      );
-
-
-      clink(
-        .30
-      );
-
-
-      vibrate(
-        8
-      );
-
-
-      await wait(
-        155
-      );
-
-    }
-    else{
-
-      await wait(
-        250
-      );
-
-    }
-
-
-    /*
-      SAVE LANDING POSITION
-    */
-
-    coinPos.x =
+    let finalX =
       targetX;
 
-
-    coinPos.y =
+    let finalY =
       targetY;
 
+    if(hitEdge){
+      /*
+        Hard edge throws visibly
+        ricochet instead of just
+        clamping dead.
+      */
+
+      const inwardX =
+        hitEdgeX
+          ? -Math.sign(rawTargetX) *
+            (
+              24 +
+              strength*13
+            )
+          : dirX *
+            (
+              5 +
+              strength*2
+            );
+
+      const inwardY =
+        hitEdgeY
+          ? -Math.sign(rawTargetY) *
+            (
+              20 +
+              strength*11
+            )
+          : -(
+              7 +
+              strength*3
+            );
+
+      finalX =
+        clamp(
+          targetX +
+          inwardX,
+          -limits.x,
+          limits.x
+        );
+
+      finalY =
+        clamp(
+          targetY +
+          inwardY,
+          -limits.y,
+          limits.y
+        );
+
+      const ricochetMs =
+        210;
+
+      coinWrap.animate(
+        [
+          {
+            transform:
+              `translate3d(
+                ${targetX}px,
+                ${targetY}px,
+                0
+              )`
+          },
+          {
+            transform:
+              `translate3d(
+                ${finalX}px,
+                ${finalY}px,
+                0
+              )`
+          }
+        ],
+        {
+          duration:ricochetMs,
+          easing:
+            'cubic-bezier(.18,.76,.28,1)',
+          fill:'forwards'
+        }
+      );
+
+      shadow.animate(
+        [
+          {
+            transform:
+              `translate(
+                calc(-50% + ${targetX}px),
+                ${targetY}px
+              )
+              scale(.92)`,
+            opacity:.58
+          },
+          {
+            transform:
+              `translate(
+                calc(-50% + ${finalX}px),
+                ${finalY}px
+              )
+              scale(1)`,
+            opacity:.64
+          }
+        ],
+        {
+          duration:ricochetMs,
+          easing:
+            'cubic-bezier(.18,.76,.28,1)',
+          fill:'forwards'
+        }
+      );
+
+      await wait(115);
+
+      vibrate(7);
+
+      await wait(95);
+    }
+
+    else{
+      const bounceDistance =
+        5 +
+        strength*3;
+
+      const bounceX =
+        clamp(
+          targetX +
+          dirX*bounceDistance,
+          -limits.x,
+          limits.x
+        );
+
+      const bounceY =
+        clamp(
+          targetY -
+          (
+            8 +
+            strength*5
+          ),
+          -limits.y,
+          limits.y
+        );
+
+      coinWrap.animate(
+        [
+          {
+            transform:
+              `translate3d(
+                ${targetX}px,
+                ${targetY}px,
+                0
+              )`
+          },
+          {
+            transform:
+              `translate3d(
+                ${bounceX}px,
+                ${bounceY}px,
+                0
+              )`,
+            offset:.35
+          },
+          {
+            transform:
+              `translate3d(
+                ${targetX}px,
+                ${targetY}px,
+                0
+              )`
+          }
+        ],
+        {
+          duration:220,
+          easing:'ease-out',
+          fill:'forwards'
+        }
+      );
+
+      shadow.animate(
+        [
+          {
+            transform:
+              `translate(
+                calc(-50% + ${targetX}px),
+                ${targetY}px
+              )
+              scale(1)`,
+            opacity:.64
+          },
+          {
+            transform:
+              `translate(
+                calc(-50% + ${bounceX}px),
+                ${bounceY}px
+              )
+              scale(.92)`,
+            opacity:.56,
+            offset:.35
+          },
+          {
+            transform:
+              `translate(
+                calc(-50% + ${targetX}px),
+                ${targetY}px
+              )
+              scale(1)`,
+            opacity:.64
+          }
+        ],
+        {
+          duration:220,
+          easing:'ease-out',
+          fill:'forwards'
+        }
+      );
+
+      if(
+        strength>1.25
+      ){
+        await wait(92);
+        vibrate(6);
+        await wait(128);
+      }
+      else{
+        await wait(220);
+      }
+    }
+
+    coinPos.x =
+      finalX;
+
+    coinPos.y =
+      finalY;
 
     currentFace =
       outcome;
 
-
     cancelAnimations();
-
-
     setRestingPosition();
 
-
-    /*
-      SINGLE
-    */
-
     if(
-      mode ===
-      'single'
+      mode==='single'
     ){
-
       showResult(
         outcome
       );
 
-
       flipping =
         false;
-
 
       hint.style.opacity =
         '1';
 
-
       return;
-
     }
-
-
-    /*
-      BEST OF 3
-    */
 
     series[outcome]++;
 
-
     updateScore();
 
-
     if(
-      series[outcome] >= 2
+      series[outcome]>=2
     ){
-
       showResult(
         `${outcome} wins`,
         'Best of 3'
       );
 
+      await wait(
+        1300
+      );
 
       series = {
         heads:0,
         tails:0
       };
 
-
-      await wait(
-        1000
-      );
-
-
       updateScore();
-
 
       flipping =
         false;
 
-
       hint.style.opacity =
         '1';
 
-
       return;
-
     }
-
 
     showResult(
       outcome,
       `${series.heads}–${series.tails}`
     );
 
-
-    await wait(
-      650
-    );
-
+    await wait(480);
 
     clearResult();
-
 
     flipping =
       false;
 
-
     hint.style.opacity =
       '1';
 
-
-    await wait(
-      180
-    );
-
+    await wait(120);
 
     const randomAngle =
       secureFloat(
@@ -2348,72 +1479,50 @@ async function doFlip(
         Math.PI*2
       );
 
-
     doFlip({
-
       vx:
         Math.cos(
           randomAngle
         ),
-
       vy:
         Math.sin(
           randomAngle
         ),
-
       strength:
         secureFloat(
           .85,
-          1.4
+          1.35
         ),
-
       spinBias:
         secureFloat(
           -.4,
           .4
         )
-
     });
-
   }
-  catch(error){
 
+  catch(error){
     unlockAfterError(
       error
     );
-
   }
-
 }
 
+/* ---------- Finger / touch input ---------- */
+let drag = null;
 
-/*
-  FINGER / TOUCH INPUT
-*/
-
-let drag =
-  null;
-
-
-function hitTestCoin(
-  x,
-  y
-){
-
+function hitTestCoin(x,y){
   const rect =
     coinWrap
       .getBoundingClientRect();
-
 
   const cx =
     rect.left +
     rect.width/2;
 
-
   const cy =
     rect.top +
     rect.height/2;
-
 
   const radius =
     Math.min(
@@ -2421,32 +1530,24 @@ function hitTestCoin(
       rect.height
     )*.54;
 
-
   return {
-
     inside:
       Math.hypot(
         x-cx,
         y-cy
       ) <= radius,
-
     cx,
     cy,
     radius
-
   };
-
 }
-
 
 stage.addEventListener(
   'pointerdown',
   event => {
+    warmAudio();
 
-    if(flipping){
-      return;
-    }
-
+    if(flipping) return;
 
     const hit =
       hitTestCoin(
@@ -2454,50 +1555,32 @@ stage.addEventListener(
         event.clientY
       );
 
-
-    if(!hit.inside){
-      return;
-    }
-
+    if(!hit.inside) return;
 
     try{
-
-      stage
-        .setPointerCapture(
-          event.pointerId
-        );
-
-    }
-    catch(_){}
-
+      stage.setPointerCapture(
+        event.pointerId
+      );
+    }catch(_){}
 
     const now =
       performance.now();
 
-
     drag = {
-
       id:
         event.pointerId,
-
       startX:
         event.clientX,
-
       startY:
         event.clientY,
-
       startTime:
         now,
-
       centerX:
         hit.cx,
-
       centerY:
         hit.cy,
-
       radius:
         hit.radius,
-
       samples:[
         {
           x:event.clientX,
@@ -2505,49 +1588,37 @@ stage.addEventListener(
           time:now
         }
       ]
-
     };
-
 
     coinWrap
       .classList
       .add(
         'dragging'
       );
-
   }
 );
-
 
 stage.addEventListener(
   'pointermove',
   event => {
-
     if(
       !drag ||
-      event.pointerId !==
-      drag.id ||
+      event.pointerId!==drag.id ||
       flipping
     ){
-
       return;
-
     }
-
 
     const now =
       performance.now();
-
 
     const dx =
       event.clientX -
       drag.startX;
 
-
     const dy =
       event.clientY -
       drag.startY;
-
 
     const previewX =
       clamp(
@@ -2556,14 +1627,12 @@ stage.addEventListener(
         46
       );
 
-
     const previewY =
       clamp(
         dy*.20,
         -46,
         46
       );
-
 
     const twist =
       clamp(
@@ -2572,80 +1641,60 @@ stage.addEventListener(
         16
       );
 
-
     coinWrap.style.transform =
       `translate3d(
-        ${coinPos.x + previewX}px,
-        ${coinPos.y + previewY}px,
+        ${coinPos.x+previewX}px,
+        ${coinPos.y+previewY}px,
         0
+      )
+      rotateX(
+        ${clamp(-previewY*.10,-5,5)}deg
+      )
+      rotateY(
+        ${clamp(previewX*.10,-5,5)}deg
       )
       rotateZ(
         ${twist}deg
       )`;
 
-
     shadow.style.transform =
       `translate(
-        calc(
-          -50% +
-          ${coinPos.x + previewX*.7}px
-        ),
-        ${coinPos.y + previewY*.3}px
-      )`;
-
+        calc(-50% + ${coinPos.x+previewX}px),
+        ${coinPos.y+previewY}px
+      )
+      scale(.98)`;
 
     drag.samples.push({
-
-      x:
-        event.clientX,
-
-      y:
-        event.clientY,
-
-      time:
-        now
-
+      x:event.clientX,
+      y:event.clientY,
+      time:now
     });
 
-
     while(
-      drag.samples.length > 2 &&
-      now -
-      drag.samples[0].time >
-      100
+      drag.samples.length>2 &&
+      now-drag.samples[0].time>100
     ){
-
       drag.samples.shift();
-
     }
-
   }
 );
-
 
 function finishGesture(
   event,
   cancelled=false
 ){
-
   if(
     !drag ||
-    event.pointerId !==
-    drag.id
+    event.pointerId!==drag.id
   ){
-
     return;
-
   }
-
 
   const gesture =
     drag;
 
-
   drag =
     null;
-
 
   coinWrap
     .classList
@@ -2653,33 +1702,25 @@ function finishGesture(
       'dragging'
     );
 
-
   setRestingPosition();
-
 
   if(
     cancelled ||
     flipping
   ){
-
     return;
-
   }
-
 
   const endTime =
     performance.now();
-
 
   const dx =
     event.clientX -
     gesture.startX;
 
-
   const dy =
     event.clientY -
     gesture.startY;
-
 
   const distance =
     Math.hypot(
@@ -2687,18 +1728,14 @@ function finishGesture(
       dy
     );
 
-
   const oldest =
     gesture.samples[0];
-
 
   const velocityTime =
     Math.max(
       16,
-      endTime -
-      oldest.time
+      endTime-oldest.time
     );
-
 
   let vx =
     (
@@ -2707,7 +1744,6 @@ function finishGesture(
     ) /
     velocityTime;
 
-
   let vy =
     (
       event.clientY -
@@ -2715,19 +1751,13 @@ function finishGesture(
     ) /
     velocityTime;
 
-
-  /*
-    Slow swipe fallback.
-  */
-
   if(
     Math.hypot(
       vx,
       vy
     ) < .12 &&
-    distance > 12
+    distance>12
   ){
-
     const totalTime =
       Math.max(
         40,
@@ -2735,25 +1765,20 @@ function finishGesture(
         gesture.startTime
       );
 
-
     vx =
       dx /
       totalTime;
 
-
     vy =
       dy /
       totalTime;
-
   }
-
 
   const speed =
     Math.hypot(
       vx,
       vy
     );
-
 
   const contactX =
     clamp(
@@ -2766,7 +1791,6 @@ function finishGesture(
       1
     );
 
-
   const contactY =
     clamp(
       (
@@ -2778,7 +1802,6 @@ function finishGesture(
       1
     );
 
-
   const edgeAmount =
     clamp(
       Math.hypot(
@@ -2789,7 +1812,6 @@ function finishGesture(
       1
     );
 
-
   const spinBias =
     clamp(
       contactX -
@@ -2798,16 +1820,10 @@ function finishGesture(
       1
     );
 
-
-  /*
-    ANY DIRECTION FLICK
-  */
-
   if(
-    distance >= 12 ||
-    speed >= .14
+    distance>=12 ||
+    speed>=.14
   ){
-
     const strength =
       clamp(
         .72 +
@@ -2820,52 +1836,35 @@ function finishGesture(
         2.4
       );
 
-
     doFlip({
-
       vx,
       vy,
       strength,
       spinBias
-
     });
 
-
     return;
-
   }
 
-
-  /*
-    TAP
-  */
-
   doFlip({
-
     vx:
       contactX *
       secureFloat(
         .18,
         .48
       ),
-
     vy:
       -secureFloat(
         .55,
         .95
       ) +
       contactY*.15,
-
     strength:
       .76 +
       edgeAmount*.25,
-
     spinBias
-
   });
-
 }
-
 
 stage.addEventListener(
   'pointerup',
@@ -2876,7 +1875,6 @@ stage.addEventListener(
     )
 );
 
-
 stage.addEventListener(
   'pointercancel',
   event =>
@@ -2885,7 +1883,6 @@ stage.addEventListener(
       true
     )
 );
-
 
 stage.addEventListener(
   'touchmove',
@@ -2896,51 +1893,38 @@ stage.addEventListener(
   }
 );
 
-
-/*
-  BUTTONS
-*/
-
+/* ---------- Buttons ---------- */
 flipBtn.addEventListener(
   'click',
   () => {
-
     const angle =
       secureFloat(
         0,
         Math.PI*2
       );
 
-
     doFlip({
-
       vx:
         Math.cos(
           angle
         ),
-
       vy:
         Math.sin(
           angle
         ),
-
       strength:
         secureFloat(
           .85,
           1.25
         ),
-
       spinBias:
         secureFloat(
           -.4,
           .4
         )
-
     });
-
   }
 );
-
 
 singleBtn.addEventListener(
   'click',
@@ -2950,7 +1934,6 @@ singleBtn.addEventListener(
     )
 );
 
-
 bo3Btn.addEventListener(
   'click',
   () =>
@@ -2959,73 +1942,33 @@ bo3Btn.addEventListener(
     )
 );
 
-
 soundBtn.addEventListener(
   'click',
   () => {
-
     soundOn =
       !soundOn;
-
 
     soundBtn.textContent =
       soundOn
         ? 'Sound On'
         : 'Sound Off';
 
-
     if(soundOn){
-
-      ensureAudio();
-
-
-      tone(
-        520,
-        .06,
-        .03
-      );
-
+      warmAudio();
     }
-
   }
 );
 
+/* ---------- Directional shake ---------- */
+let motionEnabled = false;
+let motionSamples = 0;
+let motionTimer = null;
+let motionListenerAttached = false;
+let genericSensor = null;
+let shakeCapture = null;
+let shakeCooldownUntil = 0;
 
-/*
-  DIRECTIONAL SHAKE
-*/
-
-let motionEnabled =
-  false;
-
-
-let motionSamples =
-  0;
-
-
-let motionTimer =
-  null;
-
-
-let motionListenerAttached =
-  false;
-
-
-let genericSensor =
-  null;
-
-
-let shakeCapture =
-  null;
-
-
-let shakeCooldownUntil =
-  0;
-
-
-let dmGravityReady =
-  false;
-
+let dmGravityReady = false;
 
 let dmGravity = {
   x:0,
@@ -3033,10 +1976,7 @@ let dmGravity = {
   z:0
 };
 
-
-let genericGravityReady =
-  false;
-
+let genericGravityReady = false;
 
 let genericGravity = {
   x:0,
@@ -3044,63 +1984,31 @@ let genericGravity = {
   z:0
 };
 
-
-/*
-  Mark sensor as confirmed only
-  after actual motion data arrives.
-*/
-
 function markMotionReady(){
-
   motionSamples++;
 
+  if(motionEnabled) return;
 
-  if(motionEnabled){
-    return;
-  }
-
-
-  motionEnabled =
-    true;
-
+  motionEnabled = true;
 
   motionBtn.textContent =
-    'Shake On';
-
+    'Shake ✓';
 
   statusEl.textContent =
     'Shake ready · directional motion connected';
 
-
   if(motionTimer){
-
     clearTimeout(
       motionTimer
     );
-
   }
-
 }
 
-
-/*
-  Convert sensor coordinates into
-  on-screen coordinates.
-
-  CSS Y goes down, sensor Y goes up,
-  so Y is inverted.
-*/
-
-function sensorToScreen(
-  x,
-  y
-){
-
+function sensorToScreen(x,y){
   const rawAngle =
     screen.orientation?.angle ??
     window.orientation ??
     0;
-
 
   const angle =
     (
@@ -3112,97 +2020,66 @@ function sensorToScreen(
     ) %
     360;
 
-
   let sx =
     x;
-
 
   let sy =
     y;
 
-
   if(
-    angle === 90
+    angle===90
   ){
-
     sx =
       -y;
-
 
     sy =
       x;
-
   }
-  else if(
-    angle === 180
-  ){
 
+  else if(
+    angle===180
+  ){
     sx =
       -x;
-
 
     sy =
       -y;
-
   }
-  else if(
-    angle === 270
-  ){
 
+  else if(
+    angle===270
+  ){
     sx =
       y;
 
-
     sy =
       -x;
-
   }
 
-
+  /*
+    Sensor Y is physically upward;
+    CSS Y is downward.
+  */
   return {
-
     x:sx,
-
     y:-sy
-
   };
-
 }
 
-
-/*
-  Collect a short directional
-  impulse instead of merely
-  detecting "something moved".
-*/
-
-function addLinearAcceleration(
-  x,
-  y,
-  z
-){
-
+function addLinearAcceleration(x,y,z){
   markMotionReady();
 
-
-  if(flipping){
-    return;
-  }
-
+  if(flipping) return;
 
   const now =
     performance.now();
-
 
   if(
     now <
     shakeCooldownUntil
   ){
-
     return;
-
   }
-
 
   const magnitude =
     Math.hypot(
@@ -3211,64 +2088,44 @@ function addLinearAcceleration(
       z
     );
 
-
   /*
-    Don't start a flip from
-    ordinary hand movement.
+    Start only on a deliberate
+    impulse, not ordinary hand wobble.
   */
-
   if(!shakeCapture){
-
     if(
-      magnitude < 4.5
+      magnitude<4.5
     ){
-
       return;
-
     }
 
-
     shakeCapture = {
-
       firstX:x,
       firstY:y,
       firstZ:z,
-
       sumX:0,
       sumY:0,
       sumZ:0,
-
       weightSum:0,
-
       peakX:x,
       peakY:y,
       peakZ:z,
-
-      peakMag:
-        magnitude,
-
+      peakMag:magnitude,
       samples:0
-
     };
-
 
     setTimeout(
       finishShakeCapture,
       125
     );
-
   }
-
 
   if(
     !shakeCapture ||
-    magnitude < .7
+    magnitude<.7
   ){
-
     return;
-
   }
-
 
   const weight =
     Math.min(
@@ -3276,84 +2133,57 @@ function addLinearAcceleration(
       18
     );
 
-
   shakeCapture.sumX +=
-    x * weight;
-
+    x*weight;
 
   shakeCapture.sumY +=
-    y * weight;
-
+    y*weight;
 
   shakeCapture.sumZ +=
-    z * weight;
-
+    z*weight;
 
   shakeCapture.weightSum +=
     weight;
 
-
   shakeCapture.samples++;
-
 
   if(
     magnitude >
     shakeCapture.peakMag
   ){
-
     shakeCapture.peakMag =
       magnitude;
-
 
     shakeCapture.peakX =
       x;
 
-
     shakeCapture.peakY =
       y;
 
-
     shakeCapture.peakZ =
       z;
-
   }
-
 }
 
-
-/*
-  Turn the captured shake into
-  vx / vy / strength for the
-  exact same physics system used
-  by finger flicks.
-*/
-
 function finishShakeCapture(){
-
   const data =
     shakeCapture;
-
 
   shakeCapture =
     null;
 
-
   if(
     !data ||
-    data.samples < 2 ||
-    data.peakMag < 4.5 ||
+    data.samples<2 ||
+    data.peakMag<4.5 ||
     flipping
   ){
-
     return;
-
   }
-
 
   shakeCooldownUntil =
     performance.now() +
     650;
-
 
   const avgX =
     data.weightSum
@@ -3361,13 +2191,11 @@ function finishShakeCapture(){
         data.weightSum
       : data.firstX;
 
-
   const avgY =
     data.weightSum
       ? data.sumY /
         data.weightSum
       : data.firstY;
-
 
   const avgZ =
     data.weightSum
@@ -3375,32 +2203,25 @@ function finishShakeCapture(){
         data.weightSum
       : data.firstZ;
 
-
   /*
-    Favor the FIRST impulse.
-
-    That prevents a back-and-forth
-    shake from averaging itself into
-    basically zero.
+    Favor the first impulse so
+    back-and-forth shaking does not
+    cancel itself out.
   */
-
   const impulseX =
     data.firstX*.70 +
     avgX*.20 +
     data.peakX*.10;
-
 
   const impulseY =
     data.firstY*.70 +
     avgY*.20 +
     data.peakY*.10;
 
-
   const impulseZ =
     data.firstZ*.70 +
     avgZ*.20 +
     data.peakZ*.10;
-
 
   const screenVector =
     sensorToScreen(
@@ -3408,14 +2229,11 @@ function finishShakeCapture(){
       impulseY
     );
 
-
   let vx =
     screenVector.x;
 
-
   let vy =
     screenVector.y;
-
 
   let xy =
     Math.hypot(
@@ -3423,54 +2241,41 @@ function finishShakeCapture(){
       vy
     );
 
-
   /*
-    Mostly Z-axis movement
-    = toward/away from screen.
-
-    Use Z mainly as extra throw
-    strength and choose a minor
-    2D travel direction.
+    Mostly toward/away from the
+    screen: use Z for strength and
+    a small random 2D path.
   */
-
   if(
-    xy < .45
+    xy<.45
   ){
-
     const angle =
       secureFloat(
         0,
         Math.PI*2
       );
 
-
     vx =
       Math.cos(
         angle
       );
-
 
     vy =
       Math.sin(
         angle
       );
 
-
     xy =
       1;
-
   }
-  else{
 
+  else{
     vx /=
       xy;
 
-
     vy /=
       xy;
-
   }
-
 
   const zBoost =
     Math.min(
@@ -3479,7 +2284,6 @@ function finishShakeCapture(){
       ) / 14,
       .65
     );
-
 
   const strength =
     clamp(
@@ -3490,184 +2294,106 @@ function finishShakeCapture(){
       2.25
     );
 
-
   doFlip({
-
     vx,
     vy,
-
     strength,
-
     spinBias:
       clamp(
         vx*.4,
         -.5,
         .5
       )
-
   });
-
 }
 
-
-/*
-  DEVICEMOTION
-
-  Use linear acceleration when
-  Android gives it to us.
-*/
-
-function handleDeviceMotion(
-  event
-){
-
+function handleDeviceMotion(event){
   if(
     event.acceleration &&
-    event.acceleration.x != null &&
-    event.acceleration.y != null &&
-    event.acceleration.z != null
+    event.acceleration.x!=null &&
+    event.acceleration.y!=null &&
+    event.acceleration.z!=null
   ){
-
     addLinearAcceleration(
-
       Number(
         event.acceleration.x
       ),
-
       Number(
         event.acceleration.y
       ),
-
       Number(
         event.acceleration.z
       )
-
     );
 
-
     return;
-
   }
-
-
-  /*
-    Fallback:
-    accelerationIncludingGravity.
-
-    Estimate gravity and subtract it.
-  */
 
   const a =
     event.accelerationIncludingGravity;
 
-
   if(
     !a ||
-    a.x == null ||
-    a.y == null ||
-    a.z == null
+    a.x==null ||
+    a.y==null ||
+    a.z==null
   ){
-
     return;
-
   }
-
 
   const rawX =
     Number(
       a.x
     );
 
-
   const rawY =
     Number(
       a.y
     );
-
 
   const rawZ =
     Number(
       a.z
     );
 
-
   if(!dmGravityReady){
-
     dmGravity = {
-
       x:rawX,
       y:rawY,
       z:rawZ
-
     };
-
 
     dmGravityReady =
       true;
 
-
     markMotionReady();
 
-
     return;
-
   }
-
 
   const alpha =
     .88;
 
-
   dmGravity.x =
-    alpha *
-    dmGravity.x +
-    (
-      1-alpha
-    ) *
-    rawX;
-
+    alpha*dmGravity.x +
+    (1-alpha)*rawX;
 
   dmGravity.y =
-    alpha *
-    dmGravity.y +
-    (
-      1-alpha
-    ) *
-    rawY;
-
+    alpha*dmGravity.y +
+    (1-alpha)*rawY;
 
   dmGravity.z =
-    alpha *
-    dmGravity.z +
-    (
-      1-alpha
-    ) *
-    rawZ;
-
+    alpha*dmGravity.z +
+    (1-alpha)*rawZ;
 
   addLinearAcceleration(
-
-    rawX -
-    dmGravity.x,
-
-    rawY -
-    dmGravity.y,
-
-    rawZ -
-    dmGravity.z
-
+    rawX-dmGravity.x,
+    rawY-dmGravity.y,
+    rawZ-dmGravity.z
   );
-
 }
 
-
-/*
-  GENERIC ACCELEROMETER FALLBACK
-  FOR CHROMIUM / ANDROID
-*/
-
 async function startGenericAccelerometer(){
-
   if(
     !(
       'Accelerometer'
@@ -3675,245 +2401,162 @@ async function startGenericAccelerometer(){
     ) ||
     genericSensor
   ){
-
     return false;
-
   }
 
-
   try{
-
     if(
       navigator.permissions?.query
     ){
-
       try{
-
         const permission =
           await navigator.permissions.query({
-            name:
-              'accelerometer'
+            name:'accelerometer'
           });
 
-
         if(
-          permission.state ===
-          'denied'
+          permission.state==='denied'
         ){
-
           return false;
-
         }
-
-      }
-      catch(_){}
-
+      }catch(_){}
     }
-
 
     const sensor =
       new Accelerometer({
         frequency:50
       });
 
-
     sensor.addEventListener(
       'reading',
       () => {
-
         const rawX =
           Number(
             sensor.x || 0
           );
-
 
         const rawY =
           Number(
             sensor.y || 0
           );
 
-
         const rawZ =
           Number(
             sensor.z || 0
           );
 
-
         if(
           !genericGravityReady
         ){
-
           genericGravity = {
-
             x:rawX,
             y:rawY,
             z:rawZ
-
           };
-
 
           genericGravityReady =
             true;
 
-
           markMotionReady();
 
-
           return;
-
         }
-
 
         const alpha =
           .88;
 
-
         genericGravity.x =
-          alpha *
-          genericGravity.x +
-          (
-            1-alpha
-          ) *
-          rawX;
-
+          alpha*genericGravity.x +
+          (1-alpha)*rawX;
 
         genericGravity.y =
-          alpha *
-          genericGravity.y +
-          (
-            1-alpha
-          ) *
-          rawY;
-
+          alpha*genericGravity.y +
+          (1-alpha)*rawY;
 
         genericGravity.z =
-          alpha *
-          genericGravity.z +
-          (
-            1-alpha
-          ) *
-          rawZ;
-
+          alpha*genericGravity.z +
+          (1-alpha)*rawZ;
 
         addLinearAcceleration(
-
-          rawX -
-          genericGravity.x,
-
-          rawY -
-          genericGravity.y,
-
-          rawZ -
-          genericGravity.z
-
+          rawX-genericGravity.x,
+          rawY-genericGravity.y,
+          rawZ-genericGravity.z
         );
-
       }
     );
-
 
     sensor.addEventListener(
       'error',
       () => {}
     );
 
-
     sensor.start();
-
 
     genericSensor =
       sensor;
 
-
     return true;
-
   }
+
   catch(_){
-
     return false;
-
   }
-
 }
 
-
-/*
-  ENABLE MOTION
-*/
-
 async function enableMotion(){
-
   motionSamples =
     0;
-
 
   motionEnabled =
     false;
 
-
   shakeCapture =
     null;
-
 
   dmGravityReady =
     false;
 
-
   genericGravityReady =
     false;
-
 
   motionBtn.textContent =
     'Testing…';
 
-
   statusEl.textContent =
     'Waiting for Android motion data…';
-
 
   if(
     !window.isSecureContext
   ){
-
     motionBtn.textContent =
       'Needs HTTPS';
-
 
     statusEl.textContent =
       'Shake requires the GitHub Pages HTTPS version.';
 
-
     return;
-
   }
 
-
   try{
-
     if(
       'DeviceMotionEvent'
       in window &&
       !motionListenerAttached
     ){
-
       if(
         typeof
         DeviceMotionEvent
           .requestPermission ===
         'function'
       ){
-
         const permission =
           await
           DeviceMotionEvent
             .requestPermission();
 
-
         if(
-          permission ===
-          'granted'
+          permission==='granted'
         ){
-
           window.addEventListener(
             'devicemotion',
             handleDeviceMotion,
@@ -3922,15 +2565,12 @@ async function enableMotion(){
             }
           );
 
-
           motionListenerAttached =
             true;
-
         }
-
       }
-      else{
 
+      else{
         window.addEventListener(
           'devicemotion',
           handleDeviceMotion,
@@ -3939,162 +2579,186 @@ async function enableMotion(){
           }
         );
 
-
         motionListenerAttached =
           true;
-
       }
-
     }
-
-  }
-  catch(_){}
-
+  }catch(_){}
 
   /*
-    If normal DeviceMotion stays
-    silent, try Chromium's
-    Accelerometer API.
+    If DeviceMotion stays silent,
+    try Chromium's Generic Sensor API.
   */
-
   setTimeout(
     () => {
-
       if(
-        motionSamples === 0
+        motionSamples===0
       ){
-
         startGenericAccelerometer();
-
       }
-
     },
     700
   );
 
-
   motionTimer =
     setTimeout(
       () => {
-
         if(
-          motionSamples === 0
+          motionSamples===0
         ){
-
           motionEnabled =
             false;
-
 
           motionBtn.textContent =
             'Shake Blocked';
 
-
           statusEl.textContent =
             'No motion data received. Open the GitHub Pages URL directly in Chrome and allow Motion sensors.';
-
         }
-
       },
       2800
     );
-
 }
-
 
 motionBtn.addEventListener(
   'click',
   () => {
-
     if(
       !motionEnabled
     ){
-
       enableMotion();
-
     }
-
   }
 );
 
-
-/*
-  QUARTER IMAGE FAILURE
-*/
-
+/* ---------- Image failures ---------- */
 document
   .querySelectorAll(
     '.quarter-photo'
   )
   .forEach(
     image => {
-
       image.addEventListener(
         'error',
         () => {
-
           statusEl.textContent =
             'Could not load the quarter image. Check your connection.';
-
         }
       );
-
     }
   );
 
-
 /*
-  GLOBAL FAILSAFE
-
-  One unexpected error should never
-  permanently lock the app again.
+  Never let one unexpected error
+  permanently lock input.
 */
-
 window.addEventListener(
   'error',
   event => {
-
     if(flipping){
-
       unlockAfterError(
-
         event.error ||
         new Error(
           event.message
         )
-
       );
-
     }
-
   }
 );
-
 
 window.addEventListener(
   'unhandledrejection',
   event => {
-
     if(flipping){
-
       unlockAfterError(
-
         event.reason ||
         new Error(
           'Unhandled promise rejection'
         )
-
       );
-
     }
-
   }
 );
 
+/*
+  Keep an off-center coin inside
+  the stage after rotation /
+  browser chrome resize.
+*/
+let resizeTimer =
+  null;
+
+function scheduleStageClamp(){
+  clearTimeout(
+    resizeTimer
+  );
+
+  resizeTimer =
+    setTimeout(
+      () => {
+        if(
+          !flipping
+        ){
+          clampCoinToStage();
+        }
+      },
+      80
+    );
+}
+
+window.addEventListener(
+  'resize',
+  scheduleStageClamp,
+  {
+    passive:true
+  }
+);
+
+window.addEventListener(
+  'orientationchange',
+  scheduleStageClamp,
+  {
+    passive:true
+  }
+);
+
+if(
+  window.visualViewport
+){
+  window.visualViewport.addEventListener(
+    'resize',
+    scheduleStageClamp,
+    {
+      passive:true
+    }
+  );
+}
+
+/*
+  Hidden reset:
+  double-tap / double-click
+  the title to recenter.
+*/
+titleEl.addEventListener(
+  'dblclick',
+  recenterCoin
+);
+
+/*
+  Start fetching the public-domain
+  coin assets immediately.
+*/
+impactPool.forEach(
+  a => {
+    try{
+      a.load();
+    }catch(_){}
+  }
+);
 
 setRestingPosition();
 
 })();
 </script>
-
 </body>
 </html>
