@@ -3041,115 +3041,6 @@ soundBtn.addEventListener(
 );
 
 
-/*
-  SHAKE SUPPORT
-*/
-
-function triggerShake(
-  strength=1
-){
-
-  if(flipping){
-    return;
-  }
-
-
-  const now =
-    performance.now();
-
-
-  if(
-    now -
-    lastShake <
-    800
-  ){
-
-    return;
-
-  }
-
-
-  lastShake =
-    now;
-
-
-  /*
-    Random travel direction,
-    since a shake doesn't have
-    one clean swipe vector.
-  */
-
-  const angle =
-    secureFloat(
-      0,
-      Math.PI*2
-    );
-
-
-  doFlip({
-
-    vx:
-      Math.cos(angle),
-
-    vy:
-      Math.sin(angle),
-
-    strength:
-      clamp(
-        strength,
-        .9,
-        1.9
-      ),
-
-    spinBias:
-      secureFloat(
-        -.4,
-        .4
-      )
-
-  });
-
-}
-
-
-function processAcceleration(
-  x,
-  y,
-  z
-){
-
-  const magnitude =
-    Math.sqrt(
-      x*x +
-      y*y +
-      z*z
-    );
-
-
-  const jerk =
-    Math.abs(
-      magnitude -
-      lastMagnitude
-    );
-
-
-  const gravityDelta =
-    Math.abs(
-      magnitude -
-      9.81
-    );
-
-
-  lastMagnitude =
-    magnitude;
-
-
-  motionSamples++;
-
-
-  if(
-    motionSamples === 1
-  ){
 
     motionEnabled =
       true;
@@ -3321,6 +3212,746 @@ async function startGenericAccelerometer(){
   }
   catch(_){
 
+/*
+  SHAKE SUPPORT
+*/
+
+let shakeCapture = null;
+
+let gravityEstimate = {
+  x:0,
+  y:0,
+  z:9.81
+};
+
+
+/*
+  Convert phone sensor direction
+  into screen direction.
+
+  This accounts for portrait /
+  landscape rotation.
+*/
+
+function sensorToScreen(
+  x,
+  y
+){
+
+  const angle =
+    screen.orientation?.angle || 0;
+
+
+  if(angle === 90){
+
+    return {
+      x:-y,
+      y:x
+    };
+
+  }
+
+
+  if(angle === 180){
+
+    return {
+      x:-x,
+      y:-y
+    };
+
+  }
+
+
+  if(angle === 270){
+
+    return {
+      x:y,
+      y:-x
+    };
+
+  }
+
+
+  return {
+    x,
+    y
+  };
+
+}
+
+
+/*
+  Start collecting a very short
+  burst of movement.
+
+  We do NOT try to calculate the
+  phone's actual position.
+
+  We only care about the strongest
+  direction of the shake.
+*/
+
+function startShakeCapture(){
+
+  if(
+    shakeCapture ||
+    flipping
+  ){
+    return;
+  }
+
+
+  shakeCapture = {
+
+    x:0,
+    y:0,
+    z:0,
+
+    force:0,
+
+    samples:0
+
+  };
+
+
+  setTimeout(
+    finishShakeCapture,
+    130
+  );
+
+}
+
+
+/*
+  Finish the 130ms shake sample
+  and turn it into the same
+  vx / vy system used by flicks.
+*/
+
+function finishShakeCapture(){
+
+  if(!shakeCapture){
+    return;
+  }
+
+
+  const data =
+    shakeCapture;
+
+
+  shakeCapture =
+    null;
+
+
+  if(
+    data.samples <
+    2
+  ){
+    return;
+  }
+
+
+  let screenVector =
+    sensorToScreen(
+      data.x,
+      data.y
+    );
+
+
+  let x =
+    screenVector.x;
+
+
+  let y =
+    screenVector.y;
+
+
+  const xyMagnitude =
+    Math.hypot(
+      x,
+      y
+    );
+
+
+  /*
+    If the shake was mostly toward
+    or away from the screen, there
+    isn't a strong 2D direction.
+
+    In that case give it a small
+    random travel direction and use
+    Z movement mostly for strength.
+  */
+
+  if(
+    xyMagnitude <
+    .8
+  ){
+
+    const randomAngle =
+      secureFloat(
+        0,
+        Math.PI*2
+      );
+
+
+    x =
+      Math.cos(
+        randomAngle
+      );
+
+
+    y =
+      Math.sin(
+        randomAngle
+      );
+
+  }
+  else{
+
+    x /=
+      xyMagnitude;
+
+
+    y /=
+      xyMagnitude;
+
+  }
+
+
+  const zForce =
+    Math.min(
+      Math.abs(
+        data.z
+      ) / 18,
+      .7
+    );
+
+
+  const shakeStrength =
+    clamp(
+      .9 +
+      data.force/18 +
+      zForce,
+      .9,
+      2.2
+    );
+
+
+  /*
+    Feed shake direction into the
+    SAME physics as finger flicks.
+
+    If up/down feels reversed on
+    your phone, change:
+      vy:y
+    to:
+      vy:-y
+  */
+
+  doFlip({
+
+    vx:x,
+
+    vy:y,
+
+    strength:
+      shakeStrength,
+
+    spinBias:
+      clamp(
+        x*.4,
+        -.5,
+        .5
+      )
+
+  });
+
+}
+
+
+/*
+  Feed one accelerometer sample
+  into the short shake capture.
+*/
+
+function addShakeSample(
+  x,
+  y,
+  z
+){
+
+  const magnitude =
+    Math.hypot(
+      x,
+      y,
+      z
+    );
+
+
+  /*
+    Ignore tiny hand movement.
+  */
+
+  if(
+    magnitude <
+    2.2
+  ){
+    return;
+  }
+
+
+  if(!shakeCapture){
+
+    startShakeCapture();
+
+  }
+
+
+  if(!shakeCapture){
+    return;
+  }
+
+
+  /*
+    Weight stronger movement more
+    heavily so the main impulse wins
+    over tiny direction changes.
+  */
+
+  const weight =
+    Math.min(
+      magnitude,
+      20
+    );
+
+
+  shakeCapture.x +=
+    x * weight;
+
+
+  shakeCapture.y +=
+    y * weight;
+
+
+  shakeCapture.z +=
+    z * weight;
+
+
+  shakeCapture.force =
+    Math.max(
+      shakeCapture.force,
+      magnitude
+    );
+
+
+  shakeCapture.samples++;
+
+}
+
+
+/*
+  DeviceMotionEvent
+
+  Prefer event.acceleration because
+  it already excludes gravity.
+
+  Some Android browsers only provide
+  accelerationIncludingGravity, so
+  the fallback below estimates and
+  removes gravity with a low-pass
+  filter.
+*/
+
+function deviceMotionHandler(
+  event
+){
+
+  if(flipping){
+    return;
+  }
+
+
+  if(
+    event.acceleration &&
+    event.acceleration.x != null &&
+    event.acceleration.y != null &&
+    event.acceleration.z != null
+  ){
+
+    const x =
+      Number(
+        event.acceleration.x
+      );
+
+
+    const y =
+      Number(
+        event.acceleration.y
+      );
+
+
+    const z =
+      Number(
+        event.acceleration.z
+      );
+
+
+    addShakeSample(
+      x,
+      y,
+      z
+    );
+
+
+    motionSamples++;
+
+
+    if(
+      motionSamples === 1
+    ){
+
+      motionEnabled =
+        true;
+
+
+      motionBtn.textContent =
+        'Shake On';
+
+
+      statusEl.textContent =
+        'Shake ready · directional motion connected';
+
+
+      if(motionTimer){
+
+        clearTimeout(
+          motionTimer
+        );
+
+      }
+
+    }
+
+
+    return;
+
+  }
+
+
+  const a =
+    event.accelerationIncludingGravity;
+
+
+  if(
+    !a ||
+    a.x == null ||
+    a.y == null ||
+    a.z == null
+  ){
+    return;
+  }
+
+
+  const rawX =
+    Number(a.x);
+
+
+  const rawY =
+    Number(a.y);
+
+
+  const rawZ =
+    Number(a.z);
+
+
+  /*
+    Slowly track gravity.
+  */
+
+  const alpha =
+    .82;
+
+
+  gravityEstimate.x =
+    alpha *
+    gravityEstimate.x +
+    (
+      1-alpha
+    ) *
+    rawX;
+
+
+  gravityEstimate.y =
+    alpha *
+    gravityEstimate.y +
+    (
+      1-alpha
+    ) *
+    rawY;
+
+
+  gravityEstimate.z =
+    alpha *
+    gravityEstimate.z +
+    (
+      1-alpha
+    ) *
+    rawZ;
+
+
+  /*
+    Remove estimated gravity.
+  */
+
+  const x =
+    rawX -
+    gravityEstimate.x;
+
+
+  const y =
+    rawY -
+    gravityEstimate.y;
+
+
+  const z =
+    rawZ -
+    gravityEstimate.z;
+
+
+  addShakeSample(
+    x,
+    y,
+    z
+  );
+
+
+  motionSamples++;
+
+
+  if(
+    motionSamples === 1
+  ){
+
+    motionEnabled =
+      true;
+
+
+    motionBtn.textContent =
+      'Shake On';
+
+
+    statusEl.textContent =
+      'Shake ready · directional motion connected';
+
+
+    if(motionTimer){
+
+      clearTimeout(
+        motionTimer
+      );
+
+    }
+
+  }
+
+}
+
+
+/*
+  Generic Accelerometer fallback
+  for Android / Chromium.
+*/
+
+async function startGenericAccelerometer(){
+
+  if(
+    !(
+      'Accelerometer'
+      in window
+    )
+  ){
+
+    return false;
+
+  }
+
+
+  try{
+
+    if(
+      navigator.permissions &&
+      navigator.permissions.query
+    ){
+
+      try{
+
+        const permission =
+          await navigator.permissions.query({
+            name:
+              'accelerometer'
+          });
+
+
+        if(
+          permission.state ===
+          'denied'
+        ){
+
+          return false;
+
+        }
+
+      }
+      catch(_){}
+
+    }
+
+
+    const sensor =
+      new Accelerometer({
+        frequency:50
+      });
+
+
+    sensor.addEventListener(
+      'reading',
+      () => {
+
+        if(flipping){
+          return;
+        }
+
+
+        const rawX =
+          Number(
+            sensor.x || 0
+          );
+
+
+        const rawY =
+          Number(
+            sensor.y || 0
+          );
+
+
+        const rawZ =
+          Number(
+            sensor.z || 0
+          );
+
+
+        /*
+          Generic Accelerometer
+          includes gravity.
+
+          Estimate and remove it.
+        */
+
+        const alpha =
+          .82;
+
+
+        gravityEstimate.x =
+          alpha *
+          gravityEstimate.x +
+          (
+            1-alpha
+          ) *
+          rawX;
+
+
+        gravityEstimate.y =
+          alpha *
+          gravityEstimate.y +
+          (
+            1-alpha
+          ) *
+          rawY;
+
+
+        gravityEstimate.z =
+          alpha *
+          gravityEstimate.z +
+          (
+            1-alpha
+          ) *
+          rawZ;
+
+
+        const x =
+          rawX -
+          gravityEstimate.x;
+
+
+        const y =
+          rawY -
+          gravityEstimate.y;
+
+
+        const z =
+          rawZ -
+          gravityEstimate.z;
+
+
+        addShakeSample(
+          x,
+          y,
+          z
+        );
+
+
+        motionSamples++;
+
+
+        if(
+          motionSamples === 1
+        ){
+
+          motionEnabled =
+            true;
+
+
+          motionBtn.textContent =
+            'Shake On';
+
+
+          statusEl.textContent =
+            'Shake ready · directional motion connected';
+
+
+          if(motionTimer){
+
+            clearTimeout(
+              motionTimer
+            );
+
+          }
+
+        }
+
+      }
+    );
+
+
+    sensor.addEventListener(
+      'error',
+      () => {}
+    );
+
+
+    sensor.start();
+
+
+    window.coinAccelerometer =
+      sensor;
+
+
+    return true;
+
+  }
+  catch(_){
+
     return false;
 
   }
@@ -3328,13 +3959,22 @@ async function startGenericAccelerometer(){
 }
 
 
+/*
+  Enable motion
+*/
+
 async function enableMotion(){
 
   motionSamples =
     0;
 
+
   motionEnabled =
     false;
+
+
+  shakeCapture =
+    null;
 
 
   motionBtn.textContent =
@@ -3342,7 +3982,7 @@ async function enableMotion(){
 
 
   statusEl.textContent =
-    'Waiting for Android motion data…';
+    'Waiting for directional Android motion data…';
 
 
   if(
@@ -3450,7 +4090,7 @@ async function enableMotion(){
 
 
           statusEl.textContent =
-            'No sensor data received. Open the GitHub Pages URL directly in Chrome and allow Motion sensors.';
+            'No motion data received. Open the GitHub Pages URL directly in Chrome and allow Motion sensors.';
 
         }
 
@@ -3465,8 +4105,8 @@ async function enableMotion(){
   ){
 
     /*
-      Timer above gives the
-      useful message.
+      Timer above handles
+      the error message.
     */
 
   }
@@ -3488,8 +4128,6 @@ motionBtn.addEventListener(
 
   }
 );
-
-
 /*
   QUARTER IMAGE ERRORS
 */
