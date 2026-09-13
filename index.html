@@ -6,7 +6,10 @@
 <meta name="theme-color" content="#0f1115">
 <title>Coin Flip</title>
 
-<link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/7/70/2021-P_US_Quarter_Obverse.jpg">
+<link
+  rel="icon"
+  href="https://upload.wikimedia.org/wikipedia/commons/7/70/2021-P_US_Quarter_Obverse.jpg"
+>
 
 <link
   rel="preload"
@@ -23,11 +26,9 @@
 <style>
 :root{
   color-scheme:dark;
-
   --bg:#0f1115;
   --panel:#171a20;
   --panel2:#1d2129;
-
   --text:#f5f7fb;
   --muted:#9ba3b0;
   --line:#2b313d;
@@ -43,9 +44,7 @@ body{
   width:100%;
   height:100%;
   margin:0;
-
   overflow:hidden;
-
   background:var(--bg);
 
   font-family:
@@ -104,13 +103,9 @@ body{
   display:flex;
 
   gap:4px;
-
   padding:4px;
 
-  border:
-    1px solid
-    var(--line);
-
+  border:1px solid var(--line);
   border-radius:14px;
 
   background:var(--panel);
@@ -134,7 +129,6 @@ body{
 
 .mode button.active{
   color:var(--text);
-
   background:var(--panel2);
 
   box-shadow:
@@ -184,8 +178,7 @@ body{
   pointer-events:none;
 
   transition:
-    opacity
-    .2s;
+    opacity .2s;
 }
 
 .score{
@@ -207,8 +200,7 @@ body{
   pointer-events:none;
 
   transition:
-    opacity
-    .2s;
+    opacity .2s;
 }
 
 .score.show{
@@ -270,16 +262,9 @@ body{
   background:#c8ccd2;
 
   box-shadow:
-    inset
-    0 0 0 1px
-    rgba(255,255,255,.5),
-
-    inset
-    0 0 14px
-    rgba(0,0,0,.18),
-
-    0 18px 34px
-    rgba(0,0,0,.42);
+    inset 0 0 0 1px rgba(255,255,255,.5),
+    inset 0 0 14px rgba(0,0,0,.18),
+    0 18px 34px rgba(0,0,0,.42);
 }
 
 .heads{
@@ -332,11 +317,17 @@ body{
     );
 
   box-shadow:
-    inset
-    0 0 8px
+    inset 0 0 8px
     rgba(0,0,0,.32);
 }
 
+/*
+  No transform transition here.
+
+  The shadow follows the exact same
+  animation path as the coin so it
+  doesn't trail behind.
+*/
 .shadow{
   position:absolute;
 
@@ -392,6 +383,7 @@ body{
 
   font-size:28px;
   font-weight:850;
+
   letter-spacing:.5px;
 
   pointer-events:none;
@@ -744,17 +736,17 @@ let series = {
 
 function secureBit(){
 
-  const a =
+  const array =
     new Uint32Array(1);
 
 
   crypto.getRandomValues(
-    a
+    array
   );
 
 
   return (
-    (a[0] & 1) === 0
+    (array[0] & 1) === 0
       ? 'heads'
       : 'tails'
   );
@@ -767,19 +759,19 @@ function secureFloat(
   max
 ){
 
-  const a =
+  const array =
     new Uint32Array(1);
 
 
   crypto.getRandomValues(
-    a
+    array
   );
 
 
   return (
     min +
     (
-      a[0] /
+      array[0] /
       4294967295
     ) *
     (
@@ -822,7 +814,7 @@ function wait(ms){
 
 
 /*
-  SOUND + HAPTICS
+  AUDIO
 */
 
 const COIN_IMPACT_URL =
@@ -831,6 +823,10 @@ const COIN_IMPACT_URL =
 
 let coinImpactBuffer =
   null;
+
+
+let coinImpactStart =
+  0;
 
 
 let coinImpactDecodePromise =
@@ -851,9 +847,6 @@ let mediaUnlocked =
 
 /*
   Start downloading immediately.
-
-  Playback still waits until
-  a user gesture unlocks audio.
 */
 
 function beginCoinAudioFetch(){
@@ -917,9 +910,15 @@ function beginCoinAudioFetch(){
 }
 
 
+/*
+  Create/resume Android Web Audio.
+*/
+
 function ensureAudio(){
 
-  if(!audioCtx){
+  if(
+    !audioCtx
+  ){
 
     audioCtx =
       new (
@@ -948,6 +947,93 @@ function ensureAudio(){
 
 }
 
+
+/*
+  Detect where the actual impact
+  starts in the recording.
+
+  This removes dead air from the
+  beginning of the file.
+*/
+
+function findImpactStart(
+  buffer
+){
+
+  try{
+
+    const channels =
+      buffer.numberOfChannels;
+
+
+    const sampleRate =
+      buffer.sampleRate;
+
+
+    const threshold =
+      .018;
+
+
+    for(
+      let i=0;
+      i<buffer.length;
+      i+=16
+    ){
+
+      let peak =
+        0;
+
+
+      for(
+        let channel=0;
+        channel<channels;
+        channel++
+      ){
+
+        const data =
+          buffer.getChannelData(
+            channel
+          );
+
+
+        peak =
+          Math.max(
+            peak,
+            Math.abs(
+              data[i]
+            )
+          );
+
+      }
+
+
+      if(
+        peak >
+        threshold
+      ){
+
+        return Math.max(
+          0,
+          i/sampleRate -
+          .012
+        );
+
+      }
+
+    }
+
+  }
+  catch(_){}
+
+
+  return 0;
+
+}
+
+
+/*
+  Decode recording into Web Audio.
+*/
 
 function decodeCoinAudio(){
 
@@ -982,8 +1068,12 @@ function decodeCoinAudio(){
     .then(
       bytes => {
 
-        if(!bytes){
+        if(
+          !bytes
+        ){
+
           return null;
+
         }
 
 
@@ -999,7 +1089,20 @@ function decodeCoinAudio(){
       buffer => {
 
         coinImpactBuffer =
-          buffer || null;
+          buffer ||
+          null;
+
+
+        if(
+          coinImpactBuffer
+        ){
+
+          coinImpactStart =
+            findImpactStart(
+              coinImpactBuffer
+            );
+
+        }
 
 
         return coinImpactBuffer;
@@ -1028,12 +1131,8 @@ function decodeCoinAudio(){
 
 
 /*
-  Android Chrome needs audio
-  unlocked during a real
-  interaction.
-
-  This runs on pointer-down /
-  button presses.
+  Unlock Android audio during a
+  genuine user interaction.
 */
 
 function warmAudio(){
@@ -1045,9 +1144,8 @@ function warmAudio(){
 
 
     /*
-      Tiny silent buffer activates
-      the AudioContext while the
-      user is interacting.
+      Silent buffer unlocks the
+      AudioContext.
     */
 
     const silent =
@@ -1182,15 +1280,241 @@ function warmAudio(){
 
 
 /*
-  Generated metallic fallback.
+  LAUNCH SOUND
+
+  Plays immediately when a toss
+  actually begins.
+
+  This is deliberately short and
+  subtle so it sounds like finger/
+  metal contact rather than a
+  second landing.
+*/
+
+function playLaunchSound(
+  strength=1
+){
+
+  if(
+    !soundOn
+  ){
+
+    return;
+
+  }
+
+
+  try{
+
+    const ctx =
+      ensureAudio();
+
+
+    const now =
+      ctx.currentTime;
+
+
+    /*
+      Short high-frequency scrape.
+    */
+
+    const noiseLength =
+      Math.max(
+        1,
+        Math.floor(
+          ctx.sampleRate *
+          .026
+        )
+      );
+
+
+    const buffer =
+      ctx.createBuffer(
+        1,
+        noiseLength,
+        ctx.sampleRate
+      );
+
+
+    const data =
+      buffer.getChannelData(
+        0
+      );
+
+
+    for(
+      let i=0;
+      i<data.length;
+      i++
+    ){
+
+      const envelope =
+        Math.pow(
+          1 -
+          i/data.length,
+          3.4
+        );
+
+
+      /*
+        This randomness is only for
+        sound texture.
+
+        It does not affect the flip
+        result.
+      */
+
+      data[i] =
+        (
+          Math.random()*2 -
+          1
+        ) *
+        envelope;
+
+    }
+
+
+    const noise =
+      ctx.createBufferSource();
+
+
+    const highpass =
+      ctx.createBiquadFilter();
+
+
+    const noiseGain =
+      ctx.createGain();
+
+
+    noise.buffer =
+      buffer;
+
+
+    highpass.type =
+      'highpass';
+
+
+    highpass.frequency.value =
+      1850;
+
+
+    noiseGain.gain
+      .setValueAtTime(
+        clamp(
+          .018 +
+          strength*.011,
+          .02,
+          .05
+        ),
+        now
+      );
+
+
+    noiseGain.gain
+      .exponentialRampToValueAtTime(
+        .0001,
+        now+.03
+      );
+
+
+    noise
+      .connect(
+        highpass
+      )
+      .connect(
+        noiseGain
+      )
+      .connect(
+        ctx.destination
+      );
+
+
+    noise.start(
+      now
+    );
+
+
+    /*
+      Tiny metallic ring.
+    */
+
+    const oscillator =
+      ctx.createOscillator();
+
+
+    const ringGain =
+      ctx.createGain();
+
+
+    oscillator.type =
+      'sine';
+
+
+    oscillator.frequency.value =
+      secureFloat(
+        1300,
+        1650
+      );
+
+
+    ringGain.gain
+      .setValueAtTime(
+        clamp(
+          .012 +
+          strength*.006,
+          .014,
+          .03
+        ),
+        now
+      );
+
+
+    ringGain.gain
+      .exponentialRampToValueAtTime(
+        .0001,
+        now+.05
+      );
+
+
+    oscillator
+      .connect(
+        ringGain
+      )
+      .connect(
+        ctx.destination
+      );
+
+
+    oscillator.start(
+      now
+    );
+
+
+    oscillator.stop(
+      now+.06
+    );
+
+  }
+  catch(_){}
+
+}
+
+
+/*
+  Backup landing sound if the real
+  recording can't play.
 */
 
 function fallbackMetalTick(
   intensity=1
 ){
 
-  if(!soundOn){
+  if(
+    !soundOn
+  ){
+
     return;
+
   }
 
 
@@ -1218,18 +1542,11 @@ function fallbackMetalTick(
       ) => {
 
         const oscillator =
-          ctx
-            .createOscillator();
+          ctx.createOscillator();
 
 
         const gain =
-          ctx
-            .createGain();
-
-
-        const filter =
-          ctx
-            .createBiquadFilter();
+          ctx.createGain();
 
 
         oscillator.type =
@@ -1242,18 +1559,6 @@ function fallbackMetalTick(
             .97,
             1.03
           );
-
-
-        filter.type =
-          'bandpass';
-
-
-        filter.frequency.value =
-          frequency;
-
-
-        filter.Q.value =
-          6;
 
 
         const level =
@@ -1285,8 +1590,9 @@ function fallbackMetalTick(
 
 
         oscillator
-          .connect(filter)
-          .connect(gain)
+          .connect(
+            gain
+          )
           .connect(
             ctx.destination
           );
@@ -1314,7 +1620,7 @@ function fallbackMetalTick(
 
 
 /*
-  Play decoded real impact.
+  Real decoded landing sound.
 */
 
 function playBufferedImpact(
@@ -1396,14 +1702,26 @@ function playBufferedImpact(
 
 
     source
-      .connect(highpass)
-      .connect(gain)
+      .connect(
+        highpass
+      )
+      .connect(
+        gain
+      )
       .connect(
         audioCtx.destination
       );
 
 
-    source.start();
+    /*
+      Skip dead air at the beginning
+      of the recording.
+    */
+
+    source.start(
+      0,
+      coinImpactStart
+    );
 
 
     return true;
@@ -1429,14 +1747,18 @@ function playCoinImpact(
   secondary=false
 ){
 
-  if(!soundOn){
+  if(
+    !soundOn
+  ){
+
     return;
+
   }
 
 
   /*
     Preferred:
-    decoded Web Audio.
+    decoded Web Audio recording.
   */
 
   if(
@@ -1452,8 +1774,7 @@ function playCoinImpact(
 
 
   /*
-    Second:
-    unlocked HTML audio.
+    HTML Audio fallback.
   */
 
   if(
@@ -1534,11 +1855,6 @@ function playCoinImpact(
   }
 
 
-  /*
-    First flip may happen before
-    decoding finishes.
-  */
-
   decodeCoinAudio();
 
 
@@ -1617,8 +1933,12 @@ function setMode(
   newMode
 ){
 
-  if(flipping){
+  if(
+    flipping
+  ){
+
     return;
+
   }
 
 
@@ -1660,6 +1980,7 @@ function setMode(
 
 
   updateScore();
+
 
   clearResult();
 
@@ -1817,6 +2138,7 @@ function clampCoinToStage(){
 
   cancelAnimations();
 
+
   setRestingPosition();
 
 }
@@ -1850,7 +2172,9 @@ function unlockAfterError(
 
     cancelAnimations();
 
+
     clampCoinToStage();
+
 
     setRestingPosition();
 
@@ -1865,15 +2189,19 @@ function unlockAfterError(
 
 
 /*
-  FLIP PHYSICS
+  FLIP
 */
 
 async function doFlip(
   gesture={}
 ){
 
-  if(flipping){
+  if(
+    flipping
+  ){
+
     return;
+
   }
 
 
@@ -1892,16 +2220,21 @@ async function doFlip(
 
     warmAudio();
 
+
     cancelAnimations();
 
+
     clampCoinToStage();
+
 
     setRestingPosition();
 
 
     /*
-      Crypto chooses the result
-      BEFORE physics.
+      Result is chosen first.
+
+      Gesture direction and physics
+      never alter the odds.
     */
 
     const outcome =
@@ -1910,13 +2243,15 @@ async function doFlip(
 
     let vx =
       Number(
-        gesture.vx || 0
+        gesture.vx ||
+        0
       );
 
 
     let vy =
       Number(
-        gesture.vy || 0
+        gesture.vy ||
+        0
       );
 
 
@@ -1980,6 +2315,16 @@ async function doFlip(
       );
 
 
+    /*
+      SOUND #1:
+      instant toss / flick sound.
+    */
+
+    playLaunchSound(
+      strength
+    );
+
+
     const limits =
       stageLimits();
 
@@ -2022,10 +2367,6 @@ async function doFlip(
       );
 
 
-    /*
-      Sideways.
-    */
-
     if(
       sidewaysAmount > .72 &&
       Math.abs(dirY) < .55
@@ -2049,10 +2390,6 @@ async function doFlip(
     }
 
 
-    /*
-      Downward.
-    */
-
     if(
       downwardAmount > .58
     ){
@@ -2066,10 +2403,6 @@ async function doFlip(
 
     }
 
-
-    /*
-      Upward.
-    */
 
     if(
       upwardAmount > .58
@@ -2094,8 +2427,9 @@ async function doFlip(
 
 
     /*
-      Gentle center bias when
-      already near an edge.
+      Gently push future throws
+      inward if the coin is already
+      near an edge.
     */
 
     const edgeRatioX =
@@ -2277,15 +2611,16 @@ async function doFlip(
 
 
     /*
-      Shared movement points.
-
-      Coin and shadow use
-      these exact same X/Y
-      coordinates.
+      Coin and shadow share these
+      exact coordinates.
     */
 
     let points;
 
+
+    /*
+      DOWNWARD
+    */
 
     if(
       downwardAmount > .58
@@ -2366,6 +2701,10 @@ async function doFlip(
     }
 
 
+    /*
+      SIDEWAYS
+    */
+
     else if(
       sidewaysAmount > .72 &&
       Math.abs(dirY) < .55
@@ -2427,6 +2766,10 @@ async function doFlip(
     }
 
 
+    /*
+      UPWARD
+    */
+
     else if(
       upwardAmount > .58
     ){
@@ -2486,6 +2829,10 @@ async function doFlip(
 
     }
 
+
+    /*
+      DIAGONAL
+    */
 
     else{
 
@@ -2610,9 +2957,12 @@ async function doFlip(
       travelFrames,
       {
         duration,
+
         easing:
           'cubic-bezier(.16,.68,.22,1)',
-        fill:'forwards'
+
+        fill:
+          'forwards'
       }
     );
 
@@ -2621,9 +2971,12 @@ async function doFlip(
       shadowFrames,
       {
         duration,
+
         easing:
           'cubic-bezier(.16,.68,.22,1)',
-        fill:'forwards'
+
+        fill:
+          'forwards'
       }
     );
 
@@ -2669,6 +3022,7 @@ async function doFlip(
             rotateX(0deg)
             rotateZ(0deg)
             scale(1)`,
+
           offset:0
         },
 
@@ -2692,6 +3046,7 @@ async function doFlip(
             scale(
               ${midScale}
             )`,
+
           offset:.48
         },
 
@@ -2713,6 +3068,7 @@ async function doFlip(
               ${wobbleZ*.12}deg
             )
             scale(1.015)`,
+
           offset:.89
         },
 
@@ -2724,21 +3080,37 @@ async function doFlip(
             rotateX(0deg)
             rotateZ(0deg)
             scale(1)`,
+
           offset:1
         }
 
       ],
       {
         duration,
+
         easing:
           'cubic-bezier(.12,.54,.20,1)',
-        fill:'forwards'
+
+        fill:
+          'forwards'
       }
     );
 
 
+    /*
+      SOUND #2:
+      landing impact.
+
+      This happens BEFORE the main
+      toss animation fully finishes.
+
+      The dead air at the beginning
+      of the recording is also
+      skipped.
+    */
+
     await wait(
-      duration*.87
+      duration*.82
     );
 
 
@@ -2762,8 +3134,13 @@ async function doFlip(
     );
 
 
+    /*
+      Remaining portion of main
+      motion continues after impact.
+    */
+
     await wait(
-      duration*.13
+      duration*.18
     );
 
 
@@ -2776,10 +3153,12 @@ async function doFlip(
 
 
     /*
-      Edge ricochet.
+      EDGE RICOCHET
     */
 
-    if(hitEdge){
+    if(
+      hitEdge
+    ){
 
       const inwardX =
         hitEdgeX
@@ -2935,6 +3314,10 @@ async function doFlip(
     }
 
 
+    /*
+      NORMAL LANDING BOUNCE
+    */
+
     else{
 
       const bounceDistance =
@@ -2982,6 +3365,7 @@ async function doFlip(
                 ${bounceY}px,
                 0
               )`,
+
             offset:.35
           },
 
@@ -2997,8 +3381,12 @@ async function doFlip(
         ],
         {
           duration:220,
-          easing:'ease-out',
-          fill:'forwards'
+
+          easing:
+            'ease-out',
+
+          fill:
+            'forwards'
         }
       );
 
@@ -3053,8 +3441,12 @@ async function doFlip(
         ],
         {
           duration:220,
-          easing:'ease-out',
-          fill:'forwards'
+
+          easing:
+            'ease-out',
+
+          fill:
+            'forwards'
         }
       );
 
@@ -3104,11 +3496,12 @@ async function doFlip(
 
     cancelAnimations();
 
+
     setRestingPosition();
 
 
     /*
-      Single.
+      SINGLE
     */
 
     if(
@@ -3135,7 +3528,7 @@ async function doFlip(
 
 
     /*
-      Best of 3.
+      BEST OF 3
     */
 
     series[outcome]++;
@@ -3312,8 +3705,12 @@ stage.addEventListener(
     warmAudio();
 
 
-    if(flipping){
+    if(
+      flipping
+    ){
+
       return;
+
     }
 
 
@@ -3324,8 +3721,12 @@ stage.addEventListener(
       );
 
 
-    if(!hit.inside){
+    if(
+      !hit.inside
+    ){
+
       return;
+
     }
 
 
@@ -3841,7 +4242,9 @@ soundBtn.addEventListener(
         : 'Sound Off';
 
 
-    if(soundOn){
+    if(
+      soundOn
+    ){
 
       warmAudio();
 
@@ -3920,8 +4323,12 @@ function markMotionReady(){
   motionSamples++;
 
 
-  if(motionEnabled){
+  if(
+    motionEnabled
+  ){
+
     return;
+
   }
 
 
@@ -3937,7 +4344,9 @@ function markMotionReady(){
     'Shake ready · directional motion connected';
 
 
-  if(motionTimer){
+  if(
+    motionTimer
+  ){
 
     clearTimeout(
       motionTimer
@@ -4040,8 +4449,12 @@ function addLinearAcceleration(
   markMotionReady();
 
 
-  if(flipping){
+  if(
+    flipping
+  ){
+
     return;
+
   }
 
 
@@ -4067,7 +4480,9 @@ function addLinearAcceleration(
     );
 
 
-  if(!shakeCapture){
+  if(
+    !shakeCapture
+  ){
 
     if(
       magnitude <
@@ -4533,19 +4948,22 @@ async function startGenericAccelerometer(){
 
         const rawX =
           Number(
-            sensor.x || 0
+            sensor.x ||
+            0
           );
 
 
         const rawY =
           Number(
-            sensor.y || 0
+            sensor.y ||
+            0
           );
 
 
         const rawZ =
           Number(
-            sensor.z || 0
+            sensor.z ||
+            0
           );
 
 
@@ -4853,7 +5271,9 @@ window.addEventListener(
   'error',
   event => {
 
-    if(flipping){
+    if(
+      flipping
+    ){
 
       unlockAfterError(
 
@@ -4874,7 +5294,9 @@ window.addEventListener(
   'unhandledrejection',
   event => {
 
-    if(flipping){
+    if(
+      flipping
+    ){
 
       unlockAfterError(
 
@@ -4960,8 +5382,8 @@ if(
 
 
 /*
-  Begin downloading the real
-  coin sound immediately.
+  Start downloading audio
+  immediately.
 */
 
 beginCoinAudioFetch();
@@ -4973,4 +5395,4 @@ setRestingPosition();
 </script>
 
 </body>
-  </html>
+</html>
