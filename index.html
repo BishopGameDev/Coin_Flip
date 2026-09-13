@@ -5,308 +5,152 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#0f1115">
 <title>Coin Flip</title>
-
-<link
-  rel="icon"
-  href="https://upload.wikimedia.org/wikipedia/commons/7/70/2021-P_US_Quarter_Obverse.jpg"
->
-
-<link
-  rel="preload"
-  as="image"
-  href="https://upload.wikimedia.org/wikipedia/commons/7/70/2021-P_US_Quarter_Obverse.jpg"
->
-
-<link
-  rel="preload"
-  as="image"
-  href="https://upload.wikimedia.org/wikipedia/commons/e/eb/United_States_Quarter_Reverse_2021.jpg"
->
-
+<link rel="preload" as="image" href="https://upload.wikimedia.org/wikipedia/commons/7/70/2021-P_US_Quarter_Obverse.jpg">
+<link rel="preload" as="image" href="https://upload.wikimedia.org/wikipedia/commons/e/eb/United_States_Quarter_Reverse_2021.jpg">
 <style>
-:root{
-  color-scheme:dark;
-  --bg:#0f1115;
-  --panel:#171a20;
-  --panel2:#1d2129;
-  --text:#f5f7fb;
-  --muted:#9ba3b0;
-  --line:#2b313d;
-}
-
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
-html,
-body{
-  width:100%;
-  height:100%;
-  margin:0;
-  overflow:hidden;
-  background:var(--bg);
-
-  font-family:
-    Inter,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-
-  color:var(--text);
-}
-
-body{
-  overscroll-behavior:none;
-  touch-action:manipulation;
-}
+:root{color-scheme:dark;--bg:#0f1115;--panel:#171a20;--panel2:#1d2129;--text:#f5f7fb;--muted:#9ba3b0;--line:#2b313d}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{overscroll-behavior:none;touch-action:manipulation}
 
 .app{
   height:100dvh;
-
   display:grid;
-
-  grid-template-rows:
-    auto
-    1fr
-    auto;
-
+  grid-template-rows:auto 1fr auto;
   gap:12px;
-
-  padding:
-    calc(env(safe-area-inset-top) + 16px)
-    18px
-    calc(env(safe-area-inset-bottom) + 18px);
-
+  padding:calc(env(safe-area-inset-top) + 16px) 18px calc(env(safe-area-inset-bottom) + 18px);
   background:
-    radial-gradient(
-      circle at 50% 38%,
-      rgba(255,255,255,.055),
-      transparent 32%
-    ),
-    linear-gradient(
-      180deg,
-      #101319,
-      #0c0e12
-    );
+    radial-gradient(circle at 50% 38%,rgba(255,255,255,.055),transparent 32%),
+    linear-gradient(180deg,#101319,#0c0e12);
 }
 
 .topbar{
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
 }
 
 .mode{
   display:flex;
-
   gap:4px;
   padding:4px;
-
   border:1px solid var(--line);
   border-radius:14px;
-
   background:var(--panel);
 }
 
 .mode button{
   border:0;
-
-  padding:
-    9px
-    12px;
-
+  padding:9px 12px;
   border-radius:10px;
-
   background:transparent;
-
   color:var(--muted);
-
   font-weight:750;
 }
 
 .mode button.active{
   color:var(--text);
   background:var(--panel2);
-
-  box-shadow:
-    0 3px 12px
-    rgba(0,0,0,.22);
+  box-shadow:0 3px 12px rgba(0,0,0,.22);
 }
 
 .stage{
   position:relative;
-
   min-height:0;
-
   display:flex;
   align-items:center;
   justify-content:center;
-
   overflow:hidden;
-
   perspective:1200px;
-
   touch-action:none;
   user-select:none;
 }
 
 .hint{
   position:absolute;
-
   top:4%;
   left:50%;
-
-  transform:
-    translateX(-50%);
-
-  width:
-    min(
-      92%,
-      460px
-    );
-
+  transform:translateX(-50%);
+  width:min(92%,460px);
   text-align:center;
-
   color:var(--muted);
-
   font-size:14px;
   line-height:1.4;
-
   pointer-events:none;
-
-  transition:
-    opacity .2s;
+  transition:opacity .2s;
 }
 
 .score{
   position:absolute;
-
   top:13%;
   left:50%;
-
-  transform:
-    translateX(-50%);
-
+  transform:translateX(-50%);
   opacity:0;
-
   color:var(--muted);
-
   font-size:14px;
   font-weight:750;
-
   pointer-events:none;
-
-  transition:
-    opacity .2s;
+  transition:opacity .2s;
 }
 
-.score.show{
-  opacity:1;
-}
+.score.show{opacity:1}
 
 .coin-wrap{
   position:relative;
-
   width:210px;
   height:210px;
-
-  transform-style:
-    preserve-3d;
-
-  will-change:
-    transform;
-
+  transform-style:preserve-3d;
+  will-change:transform;
   cursor:grab;
 }
 
-.coin-wrap.dragging{
-  cursor:grabbing;
-}
+.coin-wrap.dragging{cursor:grabbing}
 
 .coin{
   position:relative;
-
   width:100%;
   height:100%;
-
   border-radius:50%;
-
-  transform-style:
-    preserve-3d;
-
-  will-change:
-    transform;
+  transform-style:preserve-3d;
+  will-change:transform;
 }
 
 .face,
 .edge{
   position:absolute;
-
   inset:0;
-
   border-radius:50%;
-
   backface-visibility:hidden;
 }
 
 .face{
   overflow:hidden;
-
-  border:
-    3px solid
-    #adb2ba;
-
+  border:3px solid #adb2ba;
   background:#c8ccd2;
-
   box-shadow:
     inset 0 0 0 1px rgba(255,255,255,.5),
     inset 0 0 14px rgba(0,0,0,.18),
     0 18px 34px rgba(0,0,0,.42);
 }
 
-.heads{
-  transform:
-    translateZ(8px);
-}
-
-.tails{
-  transform:
-    rotateY(180deg)
-    translateZ(8px);
-}
+.heads{transform:translateZ(8px)}
+.tails{transform:rotateY(180deg) translateZ(8px)}
 
 .quarter-photo{
   display:block;
-
   width:100%;
   height:100%;
-
   object-fit:cover;
-
   border-radius:50%;
-
-  transform:
-    scale(1.015);
-
-  filter:
-    contrast(1.05)
-    brightness(.98);
-
+  transform:scale(1.015);
+  filter:contrast(1.05) brightness(.98);
   pointer-events:none;
   user-select:none;
 }
 
 .edge{
-  transform:
-    translateZ(0);
-
-  border:
-    8px solid
-    #8e949d;
-
+  transform:translateZ(0);
+  border:8px solid #8e949d;
   background:
     repeating-linear-gradient(
       90deg,
@@ -315,167 +159,94 @@ body{
       #838992 2px 3px,
       #c3c7cd 3px 4px
     );
-
-  box-shadow:
-    inset 0 0 8px
-    rgba(0,0,0,.32);
+  box-shadow:inset 0 0 8px rgba(0,0,0,.32);
 }
 
-/*
-  No transform transition here.
-
-  The shadow follows the exact same
-  animation path as the coin so it
-  doesn't trail behind.
-*/
 .shadow{
   position:absolute;
-
   left:50%;
-
-  top:
-    calc(
-      50% +
-      135px
-    );
-
+  top:calc(50% + 135px);
   width:132px;
   height:26px;
-
-  transform:
-    translateX(-50%);
-
+  transform:translateX(-50%);
   border-radius:50%;
-
   background:
     radial-gradient(
       ellipse,
       rgba(0,0,0,.46),
       rgba(0,0,0,.13) 45%,
-      rgba(0,0,0,0) 72%
+      transparent 72%
     );
-
-  filter:
-    blur(4px);
-
+  filter:blur(4px);
   opacity:.64;
-
   pointer-events:none;
-
-  will-change:
-    transform,
-    opacity;
+  will-change:transform,opacity;
 }
 
 .result{
   position:absolute;
-
   left:50%;
   bottom:7%;
-
-  transform:
-    translateX(-50%)
-    translateY(8px);
-
+  transform:translateX(-50%) translateY(8px);
   opacity:0;
-
   text-align:center;
-
   font-size:28px;
   font-weight:850;
-
   letter-spacing:.5px;
-
   pointer-events:none;
-
-  transition:
-    opacity .22s,
-    transform .22s;
+  transition:opacity .22s,transform .22s;
 }
 
 .result.show{
   opacity:1;
-
-  transform:
-    translateX(-50%)
-    translateY(0);
+  transform:translateX(-50%) translateY(0);
 }
 
 .result small{
   display:block;
-
   margin-top:5px;
-
   color:var(--muted);
-
   font-size:13px;
   font-weight:700;
 }
 
 .controls{
   display:flex;
-
   justify-content:center;
   align-items:center;
-
   gap:9px;
 }
 
 .pill{
   min-width:0;
-
-  padding:
-    13px
-    15px;
-
-  border:
-    1px solid
-    var(--line);
-
+  padding:13px 15px;
+  border:1px solid var(--line);
   border-radius:16px;
-
   background:var(--panel);
-
   color:var(--text);
-
   font-size:14px;
   font-weight:800;
 }
 
-.pill.secondary{
-  color:var(--muted);
-}
-
-.pill:active{
-  transform:
-    scale(.97);
-}
+.pill.secondary{color:var(--muted)}
+.pill:active{transform:scale(.97)}
 
 .status{
   min-height:17px;
-
   margin-top:6px;
-
   text-align:center;
-
   color:var(--muted);
-
   font-size:12px;
 }
 
 @media(max-height:650px){
-
   .coin-wrap{
     width:165px;
     height:165px;
   }
 
   .shadow{
-    top:
-      calc(
-        50% +
-        107px
-      );
+    top:calc(50% + 107px);
   }
 
   .result{
@@ -485,7 +256,6 @@ body{
   .hint{
     top:1%;
   }
-
 }
 </style>
 </head>
@@ -495,100 +265,53 @@ body{
 <div class="app">
 
   <header class="topbar">
-
     <div class="mode">
-
-      <button
-        id="singleBtn"
-        class="active"
-      >
-        Single
-      </button>
-
-      <button
-        id="bo3Btn"
-      >
-        Best of 3
-      </button>
-
+      <button id="singleBtn" class="active">Single</button>
+      <button id="bo3Btn">Best of 3</button>
     </div>
-
   </header>
 
+  <main class="stage" id="stage">
 
-  <main
-    class="stage"
-    id="stage"
-  >
-
-    <div
-      class="hint"
-      id="hint"
-    >
+    <div class="hint" id="hint">
       Flick it any direction, tap it, or shake your phone
     </div>
 
-    <div
-      class="score"
-      id="score"
-    >
+    <div class="score" id="score">
       Heads 0 · Tails 0
     </div>
 
-    <div
-      class="shadow"
-      id="shadow"
-    ></div>
+    <div class="shadow" id="shadow"></div>
 
-
-    <div
-      class="coin-wrap"
-      id="coinWrap"
-    >
-
-      <div
-        class="coin"
-        id="coin"
-      >
+    <div class="coin-wrap" id="coinWrap">
+      <div class="coin" id="coin">
 
         <div class="face heads">
-
           <img
             class="quarter-photo"
             src="https://upload.wikimedia.org/wikipedia/commons/7/70/2021-P_US_Quarter_Obverse.jpg"
             alt="Heads"
             draggable="false"
           >
-
         </div>
 
-
         <div class="face tails">
-
           <img
             class="quarter-photo"
             src="https://upload.wikimedia.org/wikipedia/commons/e/eb/United_States_Quarter_Reverse_2021.jpg"
             alt="Tails"
             draggable="false"
           >
-
         </div>
-
 
         <div class="edge"></div>
 
       </div>
-
     </div>
 
-
-    <div
-      class="result"
-      id="result"
-    ></div>
+    <div class="result" id="result"></div>
 
   </main>
-
 
   <footer>
 
@@ -617,7 +340,6 @@ body{
 
     </div>
 
-
     <div
       class="status"
       id="status"
@@ -629,77 +351,55 @@ body{
 
 </div>
 
-
 <script>
 (() => {
 
 'use strict';
 
 
+const $ =
+  id =>
+    document.getElementById(id);
+
+
 const stage =
-  document.getElementById(
-    'stage'
-  );
+  $('stage');
 
 const coinWrap =
-  document.getElementById(
-    'coinWrap'
-  );
+  $('coinWrap');
 
 const coin =
-  document.getElementById(
-    'coin'
-  );
+  $('coin');
 
 const shadow =
-  document.getElementById(
-    'shadow'
-  );
+  $('shadow');
 
 const resultEl =
-  document.getElementById(
-    'result'
-  );
+  $('result');
 
 const scoreEl =
-  document.getElementById(
-    'score'
-  );
+  $('score');
 
 const hint =
-  document.getElementById(
-    'hint'
-  );
+  $('hint');
 
 const singleBtn =
-  document.getElementById(
-    'singleBtn'
-  );
+  $('singleBtn');
 
 const bo3Btn =
-  document.getElementById(
-    'bo3Btn'
-  );
+  $('bo3Btn');
 
 const motionBtn =
-  document.getElementById(
-    'motionBtn'
-  );
+  $('motionBtn');
 
 const flipBtn =
-  document.getElementById(
-    'flipBtn'
-  );
+  $('flipBtn');
 
 const soundBtn =
-  document.getElementById(
-    'soundBtn'
-  );
+  $('soundBtn');
 
 const statusEl =
-  document.getElementById(
-    'status'
-  );
+  $('status');
 
 
 let mode =
@@ -710,9 +410,6 @@ let flipping =
 
 let soundOn =
   true;
-
-let audioCtx =
-  null;
 
 let currentFace =
   'heads';
@@ -730,23 +427,17 @@ let series = {
 };
 
 
-/*
-  SECURE RANDOMNESS
-*/
+/* ---------- Random ---------- */
 
 function secureBit(){
 
-  const array =
+  const a =
     new Uint32Array(1);
 
-
-  crypto.getRandomValues(
-    array
-  );
-
+  crypto.getRandomValues(a);
 
   return (
-    (array[0] & 1) === 0
+    (a[0] & 1) === 0
       ? 'heads'
       : 'tails'
   );
@@ -759,19 +450,15 @@ function secureFloat(
   max
 ){
 
-  const array =
+  const a =
     new Uint32Array(1);
 
-
-  crypto.getRandomValues(
-    array
-  );
-
+  crypto.getRandomValues(a);
 
   return (
     min +
     (
-      array[0] /
+      a[0] /
       4294967295
     ) *
     (
@@ -783,136 +470,98 @@ function secureFloat(
 }
 
 
-function clamp(
-  value,
-  min,
-  max
-){
-
-  return Math.max(
+const clamp =
+  (
+    value,
     min,
-    Math.min(
-      max,
-      value
-    )
-  );
-
-}
-
-
-function wait(ms){
-
-  return new Promise(
-    resolve =>
-      setTimeout(
-        resolve,
-        ms
+    max
+  ) =>
+    Math.max(
+      min,
+      Math.min(
+        max,
+        value
       )
-  );
-
-}
+    );
 
 
-/*
-  AUDIO
-*/
+const wait =
+  ms =>
+    new Promise(
+      resolve =>
+        setTimeout(
+          resolve,
+          ms
+        )
+    );
+
+
+/* ---------- Audio ---------- */
 
 const COIN_IMPACT_URL =
   'https://upload.wikimedia.org/wikipedia/commons/c/c5/Coin_dropped_on_wooden_floor.ogg';
 
 
-let coinImpactBuffer =
+let audioCtx =
   null;
 
+let impactBuffer =
+  null;
 
-let coinImpactStart =
+let impactStart =
   0;
 
-
-let coinImpactDecodePromise =
+let decodePromise =
   null;
 
+
+/*
+  Start downloading before
+  the first flip.
+*/
 
 let audioBytesPromise =
-  null;
 
+  fetch(
+    COIN_IMPACT_URL,
+    {
+      mode:'cors',
+      cache:'force-cache'
+    }
+  )
 
-let mediaFallback =
-  null;
+  .then(
+    response => {
 
+      if(
+        !response.ok
+      ){
 
-let mediaUnlocked =
-  false;
-
-
-/*
-  Start downloading immediately.
-*/
-
-function beginCoinAudioFetch(){
-
-  if(
-    audioBytesPromise
-  ){
-
-    return audioBytesPromise;
-
-  }
-
-
-  audioBytesPromise =
-
-    fetch(
-      COIN_IMPACT_URL,
-      {
-        mode:'cors',
-        cache:'force-cache'
-      }
-    )
-
-    .then(
-      response => {
-
-        if(
-          !response.ok
-        ){
-
-          throw new Error(
-            `Coin audio HTTP ${response.status}`
-          );
-
-        }
-
-
-        return response
-          .arrayBuffer();
-
-      }
-    )
-
-    .catch(
-      error => {
-
-        console.warn(
-          'Coin audio download failed:',
-          error
+        throw new Error(
+          `Audio HTTP ${response.status}`
         );
 
-
-        return null;
-
       }
-    );
 
+      return response
+        .arrayBuffer();
 
-  return audioBytesPromise;
+    }
+  )
 
-}
+  .catch(
+    error => {
 
+      console.warn(
+        'Coin audio download failed:',
+        error
+      );
 
-/*
-  Create/resume Android Web Audio.
-*/
+      return null;
+
+    }
+  );
+
 
 function ensureAudio(){
 
@@ -949,11 +598,9 @@ function ensureAudio(){
 
 
 /*
-  Detect where the actual impact
-  starts in the recording.
-
-  This removes dead air from the
-  beginning of the file.
+  Find the first real sound in
+  the coin recording so silence
+  at the beginning isn't played.
 */
 
 function findImpactStart(
@@ -961,14 +608,6 @@ function findImpactStart(
 ){
 
   try{
-
-    const channels =
-      buffer.numberOfChannels;
-
-
-    const sampleRate =
-      buffer.sampleRate;
-
 
     const threshold =
       .018;
@@ -986,21 +625,18 @@ function findImpactStart(
 
       for(
         let channel=0;
-        channel<channels;
+        channel<buffer.numberOfChannels;
         channel++
       ){
-
-        const data =
-          buffer.getChannelData(
-            channel
-          );
-
 
         peak =
           Math.max(
             peak,
             Math.abs(
-              data[i]
+              buffer
+                .getChannelData(
+                  channel
+                )[i]
             )
           );
 
@@ -1014,7 +650,8 @@ function findImpactStart(
 
         return Math.max(
           0,
-          i/sampleRate -
+          i /
+          buffer.sampleRate -
           .012
         );
 
@@ -1031,28 +668,24 @@ function findImpactStart(
 }
 
 
-/*
-  Decode recording into Web Audio.
-*/
-
-function decodeCoinAudio(){
+function decodeImpact(){
 
   if(
-    coinImpactBuffer
+    impactBuffer
   ){
 
     return Promise.resolve(
-      coinImpactBuffer
+      impactBuffer
     );
 
   }
 
 
   if(
-    coinImpactDecodePromise
+    decodePromise
   ){
 
-    return coinImpactDecodePromise;
+    return decodePromise;
 
   }
 
@@ -1061,51 +694,40 @@ function decodeCoinAudio(){
     ensureAudio();
 
 
-  coinImpactDecodePromise =
+  decodePromise =
 
-    beginCoinAudioFetch()
+    audioBytesPromise
 
     .then(
-      bytes => {
-
-        if(
-          !bytes
-        ){
-
-          return null;
-
-        }
-
-
-        return ctx
-          .decodeAudioData(
-            bytes.slice(0)
-          );
-
-      }
+      bytes =>
+        bytes
+          ? ctx.decodeAudioData(
+              bytes.slice(0)
+            )
+          : null
     )
 
     .then(
       buffer => {
 
-        coinImpactBuffer =
+        impactBuffer =
           buffer ||
           null;
 
 
         if(
-          coinImpactBuffer
+          impactBuffer
         ){
 
-          coinImpactStart =
+          impactStart =
             findImpactStart(
-              coinImpactBuffer
+              impactBuffer
             );
 
         }
 
 
-        return coinImpactBuffer;
+        return impactBuffer;
 
       }
     )
@@ -1118,21 +740,21 @@ function decodeCoinAudio(){
           error
         );
 
-
         return null;
 
       }
     );
 
 
-  return coinImpactDecodePromise;
+  return decodePromise;
 
 }
 
 
 /*
-  Unlock Android audio during a
-  genuine user interaction.
+  Unlock Web Audio during a real
+  touch/click so Android allows
+  later landing sounds.
 */
 
 function warmAudio(){
@@ -1142,11 +764,6 @@ function warmAudio(){
     const ctx =
       ensureAudio();
 
-
-    /*
-      Silent buffer unlocks the
-      AudioContext.
-    */
 
     const silent =
       ctx.createBuffer(
@@ -1172,99 +789,7 @@ function warmAudio(){
     source.start();
 
 
-    decodeCoinAudio();
-
-
-    /*
-      HTML Audio fallback.
-    */
-
-    if(
-      !mediaFallback
-    ){
-
-      mediaFallback =
-        new Audio(
-          COIN_IMPACT_URL
-        );
-
-
-      mediaFallback.preload =
-        'auto';
-
-
-      mediaFallback.playsInline =
-        true;
-
-
-      mediaFallback.crossOrigin =
-        'anonymous';
-
-    }
-
-
-    if(
-      !mediaUnlocked
-    ){
-
-      const oldVolume =
-        mediaFallback.volume;
-
-
-      mediaFallback.volume =
-        0;
-
-
-      mediaFallback.currentTime =
-        0;
-
-
-      const attempt =
-        mediaFallback.play();
-
-
-      if(
-        attempt &&
-        typeof attempt.then ===
-        'function'
-      ){
-
-        attempt
-
-          .then(
-            () => {
-
-              mediaFallback.pause();
-
-
-              mediaFallback.currentTime =
-                0;
-
-
-              mediaFallback.volume =
-                oldVolume ||
-                .45;
-
-
-              mediaUnlocked =
-                true;
-
-            }
-          )
-
-          .catch(
-            () => {
-
-              mediaFallback.volume =
-                oldVolume ||
-                .45;
-
-            }
-          );
-
-      }
-
-    }
+    decodeImpact();
 
   }
   catch(error){
@@ -1280,15 +805,7 @@ function warmAudio(){
 
 
 /*
-  LAUNCH SOUND
-
-  Plays immediately when a toss
-  actually begins.
-
-  This is deliberately short and
-  subtle so it sounds like finger/
-  metal contact rather than a
-  second landing.
+  Immediate launch sound.
 */
 
 function playLaunchSound(
@@ -1314,16 +831,12 @@ function playLaunchSound(
       ctx.currentTime;
 
 
-    /*
-      Short high-frequency scrape.
-    */
-
-    const noiseLength =
+    const length =
       Math.max(
         1,
         Math.floor(
           ctx.sampleRate *
-          .026
+          .025
         )
       );
 
@@ -1331,45 +844,31 @@ function playLaunchSound(
     const buffer =
       ctx.createBuffer(
         1,
-        noiseLength,
+        length,
         ctx.sampleRate
       );
 
 
     const data =
-      buffer.getChannelData(
-        0
-      );
+      buffer.getChannelData(0);
 
 
     for(
       let i=0;
-      i<data.length;
+      i<length;
       i++
     ){
 
-      const envelope =
-        Math.pow(
-          1 -
-          i/data.length,
-          3.4
-        );
-
-
-      /*
-        This randomness is only for
-        sound texture.
-
-        It does not affect the flip
-        result.
-      */
-
       data[i] =
-        (
-          Math.random()*2 -
+        secureFloat(
+          -1,
           1
         ) *
-        envelope;
+        Math.pow(
+          1 -
+          i/length,
+          3.5
+        );
 
     }
 
@@ -1395,7 +894,7 @@ function playLaunchSound(
 
 
     highpass.frequency.value =
-      1850;
+      1900;
 
 
     noiseGain.gain
@@ -1433,10 +932,6 @@ function playLaunchSound(
       now
     );
 
-
-    /*
-      Tiny metallic ring.
-    */
 
     const oscillator =
       ctx.createOscillator();
@@ -1501,11 +996,11 @@ function playLaunchSound(
 
 
 /*
-  Backup landing sound if the real
-  recording can't play.
+  Backup impact if the downloaded
+  recording isn't ready.
 */
 
-function fallbackMetalTick(
+function fallbackImpact(
   intensity=1
 ){
 
@@ -1529,10 +1024,10 @@ function fallbackMetalTick(
 
 
     [
-      620,
-      980,
-      1540,
-      2280
+      900,
+      1750,
+      3100,
+      5100
     ]
 
     .forEach(
@@ -1561,22 +1056,18 @@ function fallbackMetalTick(
           );
 
 
-        const level =
-          (
-            .028 /
-            (
-              index +
-              1
-            )
-          ) *
-          intensity;
-
-
         gain.gain
           .setValueAtTime(
-            level,
+            (
+              .03 /
+              (
+                index +
+                1
+              )
+            ) *
+            intensity,
             now +
-            index*.003
+            index*.002
           );
 
 
@@ -1584,8 +1075,8 @@ function fallbackMetalTick(
           .exponentialRampToValueAtTime(
             .0001,
             now +
-            .055 +
-            index*.014
+            .05 +
+            index*.02
           );
 
 
@@ -1600,14 +1091,14 @@ function fallbackMetalTick(
 
         oscillator.start(
           now +
-          index*.003
+          index*.002
         );
 
 
         oscillator.stop(
           now +
-          .09 +
-          index*.014
+          .1 +
+          index*.02
         );
 
       }
@@ -1619,21 +1110,31 @@ function fallbackMetalTick(
 }
 
 
-/*
-  Real decoded landing sound.
-*/
-
-function playBufferedImpact(
-  intensity=1,
-  secondary=false
+function playImpact(
+  intensity=1
 ){
 
   if(
-    !coinImpactBuffer ||
+    !soundOn
+  ){
+
+    return;
+
+  }
+
+
+  if(
+    !impactBuffer ||
     !audioCtx
   ){
 
-    return false;
+    decodeImpact();
+
+    fallbackImpact(
+      intensity
+    );
+
+    return;
 
   }
 
@@ -1656,40 +1157,22 @@ function playBufferedImpact(
 
 
     source.buffer =
-      coinImpactBuffer;
+      impactBuffer;
 
 
     source.playbackRate.value =
-      secondary
-
-        ? secureFloat(
-            1.08,
-            1.16
-          )
-
-        : secureFloat(
-            .97,
-            1.04
-          );
+      secureFloat(
+        .97,
+        1.04
+      );
 
 
     gain.gain.value =
       clamp(
-
-        secondary
-
-          ? .07 +
-            intensity*.07
-
-          : .26 +
-            intensity*.20,
-
+        .28 +
+        intensity*.20,
         0,
-
-        secondary
-          ? .18
-          : .54
-
+        .56
       );
 
 
@@ -1713,156 +1196,25 @@ function playBufferedImpact(
       );
 
 
-    /*
-      Skip dead air at the beginning
-      of the recording.
-    */
-
     source.start(
       0,
-      coinImpactStart
+      impactStart
     );
-
-
-    return true;
 
   }
   catch(error){
 
     console.warn(
-      'Buffered coin sound failed:',
+      'Impact playback failed:',
       error
     );
 
 
-    return false;
+    fallbackImpact(
+      intensity
+    );
 
   }
-
-}
-
-
-function playCoinImpact(
-  intensity=1,
-  secondary=false
-){
-
-  if(
-    !soundOn
-  ){
-
-    return;
-
-  }
-
-
-  /*
-    Preferred:
-    decoded Web Audio recording.
-  */
-
-  if(
-    playBufferedImpact(
-      intensity,
-      secondary
-    )
-  ){
-
-    return;
-
-  }
-
-
-  /*
-    HTML Audio fallback.
-  */
-
-  if(
-    mediaFallback &&
-    mediaUnlocked
-  ){
-
-    try{
-
-      mediaFallback.pause();
-
-
-      mediaFallback.currentTime =
-        0;
-
-
-      mediaFallback.playbackRate =
-        secondary
-
-          ? secureFloat(
-              1.08,
-              1.16
-            )
-
-          : secureFloat(
-              .97,
-              1.04
-            );
-
-
-      mediaFallback.volume =
-        clamp(
-
-          secondary
-
-            ? .08 +
-              intensity*.07
-
-            : .28 +
-              intensity*.18,
-
-          0,
-
-          secondary
-            ? .18
-            : .52
-
-        );
-
-
-      const attempt =
-        mediaFallback.play();
-
-
-      if(
-        attempt &&
-        typeof attempt.catch ===
-        'function'
-      ){
-
-        attempt.catch(
-          () =>
-            fallbackMetalTick(
-              secondary
-                ? intensity*.35
-                : intensity
-            )
-        );
-
-      }
-
-
-      return;
-
-    }
-    catch(_){}
-
-  }
-
-
-  decodeCoinAudio();
-
-
-  fallbackMetalTick(
-    secondary
-      ? intensity*.35
-      : intensity
-  );
 
 }
 
@@ -1884,9 +1236,7 @@ function vibrate(
 }
 
 
-/*
-  UI
-*/
+/* ---------- UI ---------- */
 
 function clearResult(){
 
@@ -1930,7 +1280,7 @@ function updateScore(){
 
 
 function setMode(
-  newMode
+  next
 ){
 
   if(
@@ -1943,7 +1293,7 @@ function setMode(
 
 
   mode =
-    newMode;
+    next;
 
 
   singleBtn
@@ -1981,26 +1331,21 @@ function setMode(
 
   updateScore();
 
-
   clearResult();
 
 }
 
 
-/*
-  POSITION
-*/
+/* ---------- Position ---------- */
 
 function stageLimits(){
 
   const stageRect =
-    stage
-      .getBoundingClientRect();
+    stage.getBoundingClientRect();
 
 
   const coinRect =
-    coinWrap
-      .getBoundingClientRect();
+    coinWrap.getBoundingClientRect();
 
 
   const radius =
@@ -2033,7 +1378,7 @@ function stageLimits(){
 }
 
 
-function setRestingPosition(){
+function setRest(){
 
   coinWrap.style.transform =
     `translate3d(
@@ -2079,28 +1424,25 @@ function cancelAnimations(){
   ]
 
   .forEach(
-    element => {
-
+    element =>
       element
         .getAnimations()
         .forEach(
           animation =>
             animation.cancel()
-        );
-
-    }
+        )
   );
 
 }
 
 
-function clampCoinToStage(){
+function clampToStage(){
 
   const limits =
     stageLimits();
 
 
-  const nextX =
+  coinPos.x =
     clamp(
       coinPos.x,
       -limits.x,
@@ -2108,7 +1450,7 @@ function clampCoinToStage(){
     );
 
 
-  const nextY =
+  coinPos.y =
     clamp(
       coinPos.y,
       -limits.y,
@@ -2116,35 +1458,14 @@ function clampCoinToStage(){
     );
 
 
-  if(
-    nextX ===
-    coinPos.x &&
-    nextY ===
-    coinPos.y
-  ){
-
-    return;
-
-  }
-
-
-  coinPos.x =
-    nextX;
-
-
-  coinPos.y =
-    nextY;
-
-
   cancelAnimations();
 
-
-  setRestingPosition();
+  setRest();
 
 }
 
 
-function unlockAfterError(
+function recover(
   error
 ){
 
@@ -2170,13 +1491,7 @@ function unlockAfterError(
 
   try{
 
-    cancelAnimations();
-
-
-    clampCoinToStage();
-
-
-    setRestingPosition();
+    clampToStage();
 
   }
   catch(_){}
@@ -2188,9 +1503,7 @@ function unlockAfterError(
 }
 
 
-/*
-  FLIP
-*/
+/* ---------- Flip ---------- */
 
 async function doFlip(
   gesture={}
@@ -2220,21 +1533,16 @@ async function doFlip(
 
     warmAudio();
 
-
     cancelAnimations();
 
+    clampToStage();
 
-    clampCoinToStage();
-
-
-    setRestingPosition();
+    setRest();
 
 
     /*
-      Result is chosen first.
-
-      Gesture direction and physics
-      never alter the odds.
+      Result is chosen independently
+      before physics.
     */
 
     const outcome =
@@ -2316,8 +1624,7 @@ async function doFlip(
 
 
     /*
-      SOUND #1:
-      instant toss / flick sound.
+      Immediate release sound.
     */
 
     playLaunchSound(
@@ -2329,7 +1636,7 @@ async function doFlip(
       stageLimits();
 
 
-    const upwardAmount =
+    const up =
       clamp(
         -dirY,
         0,
@@ -2337,7 +1644,7 @@ async function doFlip(
       );
 
 
-    const downwardAmount =
+    const down =
       clamp(
         dirY,
         0,
@@ -2345,7 +1652,7 @@ async function doFlip(
       );
 
 
-    const sidewaysAmount =
+    const side =
       Math.abs(
         dirX
       );
@@ -2368,8 +1675,8 @@ async function doFlip(
 
 
     if(
-      sidewaysAmount > .72 &&
-      Math.abs(dirY) < .55
+      side>.72 &&
+      Math.abs(dirY)<.55
     ){
 
       travelX =
@@ -2391,7 +1698,7 @@ async function doFlip(
 
 
     if(
-      downwardAmount > .58
+      down>.58
     ){
 
       travelY =
@@ -2405,7 +1712,7 @@ async function doFlip(
 
 
     if(
-      upwardAmount > .58
+      up>.58
     ){
 
       travelY =
@@ -2425,12 +1732,6 @@ async function doFlip(
     const startY =
       coinPos.y;
 
-
-    /*
-      Gently push future throws
-      inward if the coin is already
-      near an edge.
-    */
 
     const edgeRatioX =
       Math.abs(
@@ -2453,7 +1754,7 @@ async function doFlip(
 
 
     if(
-      edgeRatioX > .72
+      edgeRatioX>.72
     ){
 
       travelX +=
@@ -2470,7 +1771,7 @@ async function doFlip(
 
 
     if(
-      edgeRatioY > .72
+      edgeRatioY>.72
     ){
 
       travelY +=
@@ -2486,38 +1787,38 @@ async function doFlip(
     }
 
 
-    const rawTargetX =
+    const rawX =
       startX +
       travelX;
 
 
-    const rawTargetY =
+    const rawY =
       startY +
       travelY;
 
 
-    const hitEdgeX =
-      rawTargetX <
+    const hitX =
+      rawX <
       -limits.x ||
-      rawTargetX >
+      rawX >
       limits.x;
 
 
-    const hitEdgeY =
-      rawTargetY <
+    const hitY =
+      rawY <
       -limits.y ||
-      rawTargetY >
+      rawY >
       limits.y;
 
 
     const hitEdge =
-      hitEdgeX ||
-      hitEdgeY;
+      hitX ||
+      hitY;
 
 
     const targetX =
       clamp(
-        rawTargetX,
+        rawX,
         -limits.x,
         limits.x
       );
@@ -2525,7 +1826,7 @@ async function doFlip(
 
     const targetY =
       clamp(
-        rawTargetY,
+        rawY,
         -limits.y,
         limits.y
       );
@@ -2542,7 +1843,7 @@ async function doFlip(
       );
 
 
-    let spinDirection =
+    let spinDir =
       Math.sign(
         vx*.8 +
         contactBias
@@ -2550,10 +1851,10 @@ async function doFlip(
 
 
     if(
-      spinDirection === 0
+      !spinDir
     ){
 
-      spinDirection =
+      spinDir =
         secureFloat(
           0,
           1
@@ -2564,7 +1865,7 @@ async function doFlip(
     }
 
 
-    const startRotation =
+    const startRot =
       currentFace ===
       'tails'
         ? 180
@@ -2581,19 +1882,17 @@ async function doFlip(
       );
 
 
-    const faceChange =
-      outcome ===
-      currentFace
-        ? 0
-        : 180;
-
-
-    const endRotation =
-      startRotation +
-      spinDirection *
+    const endRot =
+      startRot +
+      spinDir *
       (
         turns*360 +
-        faceChange
+        (
+          outcome ===
+          currentFace
+            ? 0
+            : 180
+        )
       );
 
 
@@ -2610,20 +1909,15 @@ async function doFlip(
       );
 
 
-    /*
-      Coin and shadow share these
-      exact coordinates.
-    */
-
     let points;
 
 
     /*
-      DOWNWARD
+      Downward throw.
     */
 
     if(
-      downwardAmount > .58
+      down>.58
     ){
 
       const diveX =
@@ -2663,37 +1957,37 @@ async function doFlip(
         {
           x:startX,
           y:startY,
-          offset:0,
-          shadowScale:1,
-          shadowOpacity:.64,
-          coinScale:1
+          o:0,
+          s:1,
+          a:.64,
+          c:1
         },
 
         {
           x:diveX,
           y:diveY,
-          offset:.38,
-          shadowScale:.78,
-          shadowOpacity:.42,
-          coinScale:1.035
+          o:.38,
+          s:.78,
+          a:.42,
+          c:1.035
         },
 
         {
           x:targetX,
           y:reboundY,
-          offset:.68,
-          shadowScale:.84,
-          shadowOpacity:.48,
-          coinScale:1.025
+          o:.68,
+          s:.84,
+          a:.48,
+          c:1.025
         },
 
         {
           x:targetX,
           y:targetY,
-          offset:1,
-          shadowScale:1,
-          shadowOpacity:.64,
-          coinScale:1
+          o:1,
+          s:1,
+          a:.64,
+          c:1
         }
 
       ];
@@ -2702,12 +1996,12 @@ async function doFlip(
 
 
     /*
-      SIDEWAYS
+      Sideways throw.
     */
 
     else if(
-      sidewaysAmount > .72 &&
-      Math.abs(dirY) < .55
+      side>.72 &&
+      Math.abs(dirY)<.55
     ){
 
       const hop =
@@ -2737,28 +2031,28 @@ async function doFlip(
         {
           x:startX,
           y:startY,
-          offset:0,
-          shadowScale:1,
-          shadowOpacity:.64,
-          coinScale:1
+          o:0,
+          s:1,
+          a:.64,
+          c:1
         },
 
         {
           x:midX,
           y:midY,
-          offset:.47,
-          shadowScale:.72,
-          shadowOpacity:.36,
-          coinScale:1.045
+          o:.47,
+          s:.72,
+          a:.36,
+          c:1.045
         },
 
         {
           x:targetX,
           y:targetY,
-          offset:1,
-          shadowScale:1,
-          shadowOpacity:.64,
-          coinScale:1
+          o:1,
+          s:1,
+          a:.64,
+          c:1
         }
 
       ];
@@ -2767,11 +2061,11 @@ async function doFlip(
 
 
     /*
-      UPWARD
+      Upward throw.
     */
 
     else if(
-      upwardAmount > .58
+      up>.58
     ){
 
       const rise =
@@ -2801,28 +2095,28 @@ async function doFlip(
         {
           x:startX,
           y:startY,
-          offset:0,
-          shadowScale:1,
-          shadowOpacity:.64,
-          coinScale:1
+          o:0,
+          s:1,
+          a:.64,
+          c:1
         },
 
         {
           x:apexX,
           y:apexY,
-          offset:.46,
-          shadowScale:.48,
-          shadowOpacity:.18,
-          coinScale:1.07
+          o:.46,
+          s:.48,
+          a:.18,
+          c:1.07
         },
 
         {
           x:targetX,
           y:targetY,
-          offset:1,
-          shadowScale:1,
-          shadowOpacity:.64,
-          coinScale:1
+          o:1,
+          s:1,
+          a:.64,
+          c:1
         }
 
       ];
@@ -2831,7 +2125,7 @@ async function doFlip(
 
 
     /*
-      DIAGONAL
+      Diagonal.
     */
 
     else{
@@ -2844,7 +2138,7 @@ async function doFlip(
         dirX;
 
 
-      const arcStrength =
+      const arc =
         secureFloat(
           22,
           46
@@ -2861,8 +2155,7 @@ async function doFlip(
           targetX -
           startX
         )*.52 +
-        perpendicularX *
-        arcStrength;
+        perpendicularX*arc;
 
 
       const midY =
@@ -2871,8 +2164,7 @@ async function doFlip(
           targetY -
           startY
         )*.52 +
-        perpendicularY *
-        arcStrength;
+        perpendicularY*arc;
 
 
       points = [
@@ -2880,28 +2172,28 @@ async function doFlip(
         {
           x:startX,
           y:startY,
-          offset:0,
-          shadowScale:1,
-          shadowOpacity:.64,
-          coinScale:1
+          o:0,
+          s:1,
+          a:.64,
+          c:1
         },
 
         {
           x:midX,
           y:midY,
-          offset:.5,
-          shadowScale:.66,
-          shadowOpacity:.32,
-          coinScale:1.05
+          o:.5,
+          s:.66,
+          a:.32,
+          c:1.05
         },
 
         {
           x:targetX,
           y:targetY,
-          offset:1,
-          shadowScale:1,
-          shadowOpacity:.64,
-          coinScale:1
+          o:1,
+          s:1,
+          a:.64,
+          c:1
         }
 
       ];
@@ -2921,7 +2213,7 @@ async function doFlip(
             )`,
 
           offset:
-            point.offset
+            point.o
 
         })
       );
@@ -2940,36 +2232,46 @@ async function doFlip(
               ${point.y}px
             )
             scale(
-              ${point.shadowScale}
+              ${point.s}
             )`,
 
           opacity:
-            point.shadowOpacity,
+            point.a,
 
           offset:
-            point.offset
+            point.o
 
         })
       );
 
 
-    coinWrap.animate(
-      travelFrames,
-      {
-        duration,
+    /*
+      Save the actual movement
+      animation so we can wait for
+      its real contact point.
+    */
 
-        easing:
-          'cubic-bezier(.16,.68,.22,1)',
+    const travelAnimation =
+      coinWrap.animate(
+        travelFrames,
+        {
 
-        fill:
-          'forwards'
-      }
-    );
+          duration,
+
+          easing:
+            'cubic-bezier(.16,.68,.22,1)',
+
+          fill:
+            'forwards'
+
+        }
+      );
 
 
     shadow.animate(
       shadowFrames,
       {
+
         duration,
 
         easing:
@@ -2977,6 +2279,7 @@ async function doFlip(
 
         fill:
           'forwards'
+
       }
     );
 
@@ -3005,7 +2308,7 @@ async function doFlip(
       Math.max(
         ...points.map(
           point =>
-            point.coinScale ||
+            point.c ||
             1
         )
       );
@@ -3016,9 +2319,7 @@ async function doFlip(
 
         {
           transform:
-            `rotateY(
-              ${startRotation}deg
-            )
+            `rotateY(${startRot}deg)
             rotateX(0deg)
             rotateZ(0deg)
             scale(1)`,
@@ -3028,45 +2329,31 @@ async function doFlip(
 
         {
           transform:
-            `rotateY(
-              ${
-                startRotation +
-                (
-                  endRotation -
-                  startRotation
-                )*.48
-              }deg
-            )
-            rotateX(
-              ${wobbleX}deg
-            )
-            rotateZ(
-              ${wobbleZ}deg
-            )
-            scale(
-              ${midScale}
-            )`,
+            `rotateY(${
+              startRot +
+              (
+                endRot -
+                startRot
+              )*.48
+            }deg)
+            rotateX(${wobbleX}deg)
+            rotateZ(${wobbleZ}deg)
+            scale(${midScale})`,
 
           offset:.48
         },
 
         {
           transform:
-            `rotateY(
-              ${
-                startRotation +
-                (
-                  endRotation -
-                  startRotation
-                )*.90
-              }deg
-            )
-            rotateX(
-              ${wobbleX*.16}deg
-            )
-            rotateZ(
-              ${wobbleZ*.12}deg
-            )
+            `rotateY(${
+              startRot +
+              (
+                endRot -
+                startRot
+              )*.90
+            }deg)
+            rotateX(${wobbleX*.16}deg)
+            rotateZ(${wobbleZ*.12}deg)
             scale(1.015)`,
 
           offset:.89
@@ -3074,9 +2361,7 @@ async function doFlip(
 
         {
           transform:
-            `rotateY(
-              ${endRotation}deg
-            )
+            `rotateY(${endRot}deg)
             rotateX(0deg)
             rotateZ(0deg)
             scale(1)`,
@@ -3086,6 +2371,7 @@ async function doFlip(
 
       ],
       {
+
         duration,
 
         easing:
@@ -3093,35 +2379,29 @@ async function doFlip(
 
         fill:
           'forwards'
+
       }
     );
 
 
     /*
-      SOUND #2:
-      landing impact.
+      EXACT LANDING CONTACT.
 
-      This happens BEFORE the main
-      toss animation fully finishes.
-
-      The dead air at the beginning
-      of the recording is also
-      skipped.
+      No guessed .82 or .87 timing.
+      When the actual flight reaches
+      targetX/targetY, play the hit.
     */
 
-    await wait(
-      duration*.82
-    );
+    await travelAnimation.finished;
 
 
-    playCoinImpact(
+    playImpact(
       clamp(
         .82 +
         strength*.18,
         .85,
         1.25
-      ),
-      false
+      )
     );
 
 
@@ -3135,14 +2415,9 @@ async function doFlip(
 
 
     /*
-      Remaining portion of main
-      motion continues after impact.
+      Bounce starts immediately
+      after contact.
     */
-
-    await wait(
-      duration*.18
-    );
-
 
     let finalX =
       targetX;
@@ -3152,19 +2427,15 @@ async function doFlip(
       targetY;
 
 
-    /*
-      EDGE RICOCHET
-    */
-
     if(
       hitEdge
     ){
 
       const inwardX =
-        hitEdgeX
+        hitX
 
           ? -Math.sign(
-              rawTargetX
+              rawX
             ) *
             (
               24 +
@@ -3179,10 +2450,10 @@ async function doFlip(
 
 
       const inwardY =
-        hitEdgeY
+        hitY
 
           ? -Math.sign(
-              rawTargetY
+              rawY
             ) *
             (
               20 +
@@ -3213,43 +2484,41 @@ async function doFlip(
         );
 
 
-      const ricochetMs =
-        210;
+      const move =
+        coinWrap.animate(
+          [
 
+            {
+              transform:
+                `translate3d(
+                  ${targetX}px,
+                  ${targetY}px,
+                  0
+                )`
+            },
 
-      coinWrap.animate(
-        [
+            {
+              transform:
+                `translate3d(
+                  ${finalX}px,
+                  ${finalY}px,
+                  0
+                )`
+            }
 
+          ],
           {
-            transform:
-              `translate3d(
-                ${targetX}px,
-                ${targetY}px,
-                0
-              )`
-          },
 
-          {
-            transform:
-              `translate3d(
-                ${finalX}px,
-                ${finalY}px,
-                0
-              )`
+            duration:210,
+
+            easing:
+              'cubic-bezier(.18,.76,.28,1)',
+
+            fill:
+              'forwards'
+
           }
-
-        ],
-        {
-          duration:
-            ricochetMs,
-
-          easing:
-            'cubic-bezier(.18,.76,.28,1)',
-
-          fill:
-            'forwards'
-        }
-      );
+        );
 
 
       shadow.animate(
@@ -3285,50 +2554,39 @@ async function doFlip(
 
         ],
         {
-          duration:
-            ricochetMs,
+
+          duration:210,
 
           easing:
             'cubic-bezier(.18,.76,.28,1)',
 
           fill:
             'forwards'
+
         }
       );
 
 
-      await wait(
-        115
-      );
+      await move.finished;
 
 
       vibrate(
         7
       );
 
-
-      await wait(
-        95
-      );
-
     }
 
 
-    /*
-      NORMAL LANDING BOUNCE
-    */
-
     else{
-
-      const bounceDistance =
-        5 +
-        strength*3;
-
 
       const bounceX =
         clamp(
           targetX +
-          dirX*bounceDistance,
+          dirX *
+          (
+            5 +
+            strength*3
+          ),
           -limits.x,
           limits.x
         );
@@ -3346,49 +2604,52 @@ async function doFlip(
         );
 
 
-      coinWrap.animate(
-        [
+      const bounce =
+        coinWrap.animate(
+          [
 
+            {
+              transform:
+                `translate3d(
+                  ${targetX}px,
+                  ${targetY}px,
+                  0
+                )`
+            },
+
+            {
+              transform:
+                `translate3d(
+                  ${bounceX}px,
+                  ${bounceY}px,
+                  0
+                )`,
+
+              offset:.35
+            },
+
+            {
+              transform:
+                `translate3d(
+                  ${targetX}px,
+                  ${targetY}px,
+                  0
+                )`
+            }
+
+          ],
           {
-            transform:
-              `translate3d(
-                ${targetX}px,
-                ${targetY}px,
-                0
-              )`
-          },
 
-          {
-            transform:
-              `translate3d(
-                ${bounceX}px,
-                ${bounceY}px,
-                0
-              )`,
+            duration:220,
 
-            offset:.35
-          },
+            easing:
+              'ease-out',
 
-          {
-            transform:
-              `translate3d(
-                ${targetX}px,
-                ${targetY}px,
-                0
-              )`
+            fill:
+              'forwards'
+
           }
-
-        ],
-        {
-          duration:220,
-
-          easing:
-            'ease-out',
-
-          fill:
-            'forwards'
-        }
-      );
+        );
 
 
       shadow.animate(
@@ -3440,6 +2701,7 @@ async function doFlip(
 
         ],
         {
+
           duration:220,
 
           easing:
@@ -3447,6 +2709,7 @@ async function doFlip(
 
           fill:
             'forwards'
+
         }
       );
 
@@ -3456,38 +2719,26 @@ async function doFlip(
         1.25
       ){
 
-        await wait(
+        setTimeout(
+          () =>
+            vibrate(
+              6
+            ),
           92
         );
 
-
-        vibrate(
-          6
-        );
-
-
-        await wait(
-          128
-        );
-
       }
-      else{
 
-        await wait(
-          220
-        );
 
-      }
+      await bounce.finished;
 
     }
 
 
-    coinPos.x =
-      finalX;
-
-
-    coinPos.y =
-      finalY;
+    coinPos = {
+      x:finalX,
+      y:finalY
+    };
 
 
     currentFace =
@@ -3496,12 +2747,11 @@ async function doFlip(
 
     cancelAnimations();
 
-
-    setRestingPosition();
+    setRest();
 
 
     /*
-      SINGLE
+      Single.
     */
 
     if(
@@ -3528,7 +2778,7 @@ async function doFlip(
 
 
     /*
-      BEST OF 3
+      Best of 3.
     */
 
     series[outcome]++;
@@ -3601,7 +2851,7 @@ async function doFlip(
     );
 
 
-    const randomAngle =
+    const angle =
       secureFloat(
         0,
         Math.PI*2
@@ -3612,12 +2862,12 @@ async function doFlip(
 
       vx:
         Math.cos(
-          randomAngle
+          angle
         ),
 
       vy:
         Math.sin(
-          randomAngle
+          angle
         ),
 
       strength:
@@ -3637,7 +2887,7 @@ async function doFlip(
   }
   catch(error){
 
-    unlockAfterError(
+    recover(
       error
     );
 
@@ -3646,15 +2896,13 @@ async function doFlip(
 }
 
 
-/*
-  FINGER INPUT
-*/
+/* ---------- Touch / pointer ---------- */
 
 let drag =
   null;
 
 
-function hitTestCoin(
+function hitTest(
   x,
   y
 ){
@@ -3664,12 +2912,12 @@ function hitTestCoin(
       .getBoundingClientRect();
 
 
-  const cx =
+  const centerX =
     rect.left +
     rect.width/2;
 
 
-  const cy =
+  const centerY =
     rect.top +
     rect.height/2;
 
@@ -3685,12 +2933,14 @@ function hitTestCoin(
 
     inside:
       Math.hypot(
-        x-cx,
-        y-cy
+        x-centerX,
+        y-centerY
       ) <= radius,
 
-    cx,
-    cy,
+    cx:centerX,
+
+    cy:centerY,
+
     radius
 
   };
@@ -3715,7 +2965,7 @@ stage.addEventListener(
 
 
     const hit =
-      hitTestCoin(
+      hitTest(
         event.clientX,
         event.clientY
       );
@@ -3732,10 +2982,9 @@ stage.addEventListener(
 
     try{
 
-      stage
-        .setPointerCapture(
-          event.pointerId
-        );
+      stage.setPointerCapture(
+        event.pointerId
+      );
 
     }
     catch(_){}
@@ -3845,15 +3094,15 @@ stage.addEventListener(
 
     coinWrap.style.transform =
       `translate3d(
-        ${coinPos.x + previewX}px,
-        ${coinPos.y + previewY}px,
+        ${coinPos.x+previewX}px,
+        ${coinPos.y+previewY}px,
         0
       )
       rotateX(
-        ${clamp(-previewY*.10,-5,5)}deg
+        ${clamp(-previewY*.1,-5,5)}deg
       )
       rotateY(
-        ${clamp(previewX*.10,-5,5)}deg
+        ${clamp(previewX*.1,-5,5)}deg
       )
       rotateZ(
         ${twist}deg
@@ -3864,9 +3113,9 @@ stage.addEventListener(
       `translate(
         calc(
           -50% +
-          ${coinPos.x + previewX}px
+          ${coinPos.x+previewX}px
         ),
-        ${coinPos.y + previewY}px
+        ${coinPos.y+previewY}px
       )
       scale(.98)`;
 
@@ -3886,7 +3135,7 @@ stage.addEventListener(
 
 
     while(
-      drag.samples.length > 2 &&
+      drag.samples.length>2 &&
       now -
       drag.samples[0].time >
       100
@@ -3931,7 +3180,7 @@ function finishGesture(
     );
 
 
-  setRestingPosition();
+  setRest();
 
 
   if(
@@ -3944,7 +3193,7 @@ function finishGesture(
   }
 
 
-  const endTime =
+  const end =
     performance.now();
 
 
@@ -3969,10 +3218,10 @@ function finishGesture(
     gesture.samples[0];
 
 
-  const velocityTime =
+  const dt =
     Math.max(
       16,
-      endTime -
+      end -
       oldest.time
     );
 
@@ -3982,7 +3231,7 @@ function finishGesture(
       event.clientX -
       oldest.x
     ) /
-    velocityTime;
+    dt;
 
 
   let vy =
@@ -3990,7 +3239,7 @@ function finishGesture(
       event.clientY -
       oldest.y
     ) /
-    velocityTime;
+    dt;
 
 
   if(
@@ -4001,22 +3250,22 @@ function finishGesture(
     distance > 12
   ){
 
-    const totalTime =
+    const total =
       Math.max(
         40,
-        endTime -
+        end -
         gesture.startTime
       );
 
 
     vx =
       dx /
-      totalTime;
+      total;
 
 
     vy =
       dy /
-      totalTime;
+      total;
 
   }
 
@@ -4052,17 +3301,6 @@ function finishGesture(
     );
 
 
-  const edgeAmount =
-    clamp(
-      Math.hypot(
-        contactX,
-        contactY
-      ),
-      0,
-      1
-    );
-
-
   const spinBias =
     clamp(
       contactX -
@@ -4077,57 +3315,63 @@ function finishGesture(
     speed >= .14
   ){
 
-    const strength =
-      clamp(
-        .72 +
-        speed*1.0 +
-        Math.min(
-          distance,
-          260
-        ) / 320,
-        .72,
-        2.4
-      );
-
-
     doFlip({
 
       vx,
+
       vy,
-      strength,
+
+      strength:
+        clamp(
+          .72 +
+          speed +
+          Math.min(
+            distance,
+            260
+          ) / 320,
+          .72,
+          2.4
+        ),
+
       spinBias
 
     });
 
+  }
+  else{
 
-    return;
+    doFlip({
+
+      vx:
+        contactX *
+        secureFloat(
+          .18,
+          .48
+        ),
+
+      vy:
+        -secureFloat(
+          .55,
+          .95
+        ) +
+        contactY*.15,
+
+      strength:
+        .76 +
+        clamp(
+          Math.hypot(
+            contactX,
+            contactY
+          ),
+          0,
+          1
+        )*.25,
+
+      spinBias
+
+    });
 
   }
-
-
-  doFlip({
-
-    vx:
-      contactX *
-      secureFloat(
-        .18,
-        .48
-      ),
-
-    vy:
-      -secureFloat(
-        .55,
-        .95
-      ) +
-      contactY*.15,
-
-    strength:
-      .76 +
-      edgeAmount*.25,
-
-    spinBias
-
-  });
 
 }
 
@@ -4136,8 +3380,7 @@ stage.addEventListener(
   'pointerup',
   event =>
     finishGesture(
-      event,
-      false
+      event
     )
 );
 
@@ -4162,9 +3405,7 @@ stage.addEventListener(
 );
 
 
-/*
-  BUTTONS
-*/
+/* ---------- Buttons ---------- */
 
 flipBtn.addEventListener(
   'click',
@@ -4251,11 +3492,10 @@ soundBtn.addEventListener(
 
       setTimeout(
         () =>
-          playCoinImpact(
-            .55,
-            true
+          playImpact(
+            .55
           ),
-        90
+        80
       );
 
     }
@@ -4264,33 +3504,25 @@ soundBtn.addEventListener(
 );
 
 
-/*
-  DIRECTIONAL SHAKE
-*/
+/* ---------- Directional shake ---------- */
 
 let motionEnabled =
   false;
 
-
 let motionSamples =
   0;
-
 
 let motionTimer =
   null;
 
-
 let motionListenerAttached =
   false;
-
 
 let genericSensor =
   null;
 
-
 let shakeCapture =
   null;
-
 
 let shakeCooldownUntil =
   0;
@@ -4362,16 +3594,14 @@ function sensorToScreen(
   y
 ){
 
-  const rawAngle =
-    screen.orientation?.angle ??
-    window.orientation ??
-    0;
-
-
   const angle =
     (
       (
-        Number(rawAngle) %
+        Number(
+          screen.orientation?.angle ??
+          window.orientation ??
+          0
+        ) %
         360
       ) +
       360
@@ -4394,12 +3624,10 @@ function sensorToScreen(
     sx =
       -y;
 
-
     sy =
       x;
 
   }
-
 
   else if(
     angle === 180
@@ -4408,12 +3636,10 @@ function sensorToScreen(
     sx =
       -x;
 
-
     sy =
       -y;
 
   }
-
 
   else if(
     angle === 270
@@ -4422,7 +3648,6 @@ function sensorToScreen(
     sx =
       y;
 
-
     sy =
       -x;
 
@@ -4430,11 +3655,8 @@ function sensorToScreen(
 
 
   return {
-
     x:sx,
-
     y:-sy
-
   };
 
 }
@@ -4450,20 +3672,8 @@ function addLinearAcceleration(
 
 
   if(
-    flipping
-  ){
-
-    return;
-
-  }
-
-
-  const now =
-    performance.now();
-
-
-  if(
-    now <
+    flipping ||
+    performance.now() <
     shakeCooldownUntil
   ){
 
@@ -4504,7 +3714,7 @@ function addLinearAcceleration(
       sumY:0,
       sumZ:0,
 
-      weightSum:0,
+      weight:0,
 
       peakX:x,
       peakY:y,
@@ -4544,18 +3754,18 @@ function addLinearAcceleration(
 
 
   shakeCapture.sumX +=
-    x * weight;
+    x*weight;
 
 
   shakeCapture.sumY +=
-    y * weight;
+    y*weight;
 
 
   shakeCapture.sumZ +=
-    z * weight;
+    z*weight;
 
 
-  shakeCapture.weightSum +=
+  shakeCapture.weight +=
     weight;
 
 
@@ -4567,20 +3777,15 @@ function addLinearAcceleration(
     shakeCapture.peakMag
   ){
 
-    shakeCapture.peakMag =
-      magnitude;
-
-
-    shakeCapture.peakX =
-      x;
-
-
-    shakeCapture.peakY =
-      y;
-
-
-    shakeCapture.peakZ =
-      z;
+    Object.assign(
+      shakeCapture,
+      {
+        peakX:x,
+        peakY:y,
+        peakZ:z,
+        peakMag:magnitude
+      }
+    );
 
   }
 
@@ -4615,23 +3820,23 @@ function finishShakeCapture(){
 
 
   const avgX =
-    data.weightSum
+    data.weight
       ? data.sumX /
-        data.weightSum
+        data.weight
       : data.firstX;
 
 
   const avgY =
-    data.weightSum
+    data.weight
       ? data.sumY /
-        data.weightSum
+        data.weight
       : data.firstY;
 
 
   const avgZ =
-    data.weightSum
+    data.weight
       ? data.sumZ /
-        data.weightSum
+        data.weight
       : data.firstZ;
 
 
@@ -4653,19 +3858,14 @@ function finishShakeCapture(){
     data.peakZ*.10;
 
 
-  const screenVector =
+  let {
+    x:vx,
+    y:vy
+  } =
     sensorToScreen(
       impulseX,
       impulseY
     );
-
-
-  let vx =
-    screenVector.x;
-
-
-  let vy =
-    screenVector.y;
 
 
   let xy =
@@ -4697,10 +3897,6 @@ function finishShakeCapture(){
         angle
       );
 
-
-    xy =
-      1;
-
   }
   else{
 
@@ -4714,20 +3910,16 @@ function finishShakeCapture(){
   }
 
 
-  const zBoost =
-    Math.min(
-      Math.abs(
-        impulseZ
-      ) / 14,
-      .65
-    );
-
-
   const strength =
     clamp(
       .88 +
       data.peakMag/10 +
-      zBoost,
+      Math.min(
+        Math.abs(
+          impulseZ
+        ) / 14,
+        .65
+      ),
       .9,
       2.25
     );
@@ -4736,6 +3928,7 @@ function finishShakeCapture(){
   doFlip({
 
     vx,
+
     vy,
 
     strength,
@@ -4757,10 +3950,9 @@ function handleDeviceMotion(
 ){
 
   if(
-    event.acceleration &&
-    event.acceleration.x != null &&
-    event.acceleration.y != null &&
-    event.acceleration.z != null
+    event.acceleration?.x != null &&
+    event.acceleration?.y != null &&
+    event.acceleration?.z != null
   ){
 
     addLinearAcceleration(
@@ -4801,19 +3993,19 @@ function handleDeviceMotion(
   }
 
 
-  const rawX =
+  const x =
     Number(
       acceleration.x
     );
 
 
-  const rawY =
+  const y =
     Number(
       acceleration.y
     );
 
 
-  const rawZ =
+  const z =
     Number(
       acceleration.z
     );
@@ -4824,11 +4016,9 @@ function handleDeviceMotion(
   ){
 
     dmGravity = {
-
-      x:rawX,
-      y:rawY,
-      z:rawZ
-
+      x,
+      y,
+      z
     };
 
 
@@ -4849,42 +4039,33 @@ function handleDeviceMotion(
 
 
   dmGravity.x =
-    alpha *
-    dmGravity.x +
+    alpha*dmGravity.x +
     (
       1-alpha
-    ) *
-    rawX;
+    )*x;
 
 
   dmGravity.y =
-    alpha *
-    dmGravity.y +
+    alpha*dmGravity.y +
     (
       1-alpha
-    ) *
-    rawY;
+    )*y;
 
 
   dmGravity.z =
-    alpha *
-    dmGravity.z +
+    alpha*dmGravity.z +
     (
       1-alpha
-    ) *
-    rawZ;
+    )*z;
 
 
   addLinearAcceleration(
 
-    rawX -
-    dmGravity.x,
+    x-dmGravity.x,
 
-    rawY -
-    dmGravity.y,
+    y-dmGravity.y,
 
-    rawZ -
-    dmGravity.z
+    z-dmGravity.z
 
   );
 
@@ -4916,8 +4097,7 @@ async function startGenericAccelerometer(){
 
         const permission =
           await navigator.permissions.query({
-            name:
-              'accelerometer'
+            name:'accelerometer'
           });
 
 
@@ -4946,21 +4126,21 @@ async function startGenericAccelerometer(){
       'reading',
       () => {
 
-        const rawX =
+        const x =
           Number(
             sensor.x ||
             0
           );
 
 
-        const rawY =
+        const y =
           Number(
             sensor.y ||
             0
           );
 
 
-        const rawZ =
+        const z =
           Number(
             sensor.z ||
             0
@@ -4972,11 +4152,9 @@ async function startGenericAccelerometer(){
         ){
 
           genericGravity = {
-
-            x:rawX,
-            y:rawY,
-            z:rawZ
-
+            x,
+            y,
+            z
           };
 
 
@@ -4997,42 +4175,33 @@ async function startGenericAccelerometer(){
 
 
         genericGravity.x =
-          alpha *
-          genericGravity.x +
+          alpha*genericGravity.x +
           (
             1-alpha
-          ) *
-          rawX;
+          )*x;
 
 
         genericGravity.y =
-          alpha *
-          genericGravity.y +
+          alpha*genericGravity.y +
           (
             1-alpha
-          ) *
-          rawY;
+          )*y;
 
 
         genericGravity.z =
-          alpha *
-          genericGravity.z +
+          alpha*genericGravity.z +
           (
             1-alpha
-          ) *
-          rawZ;
+          )*z;
 
 
         addLinearAcceleration(
 
-          rawX -
-          genericGravity.x,
+          x-genericGravity.x,
 
-          rawY -
-          genericGravity.y,
+          y-genericGravity.y,
 
-          rawZ -
-          genericGravity.z
+          z-genericGravity.z
 
         );
 
@@ -5179,7 +4348,8 @@ async function enableMotion(){
     () => {
 
       if(
-        motionSamples === 0
+        motionSamples ===
+        0
       ){
 
         startGenericAccelerometer();
@@ -5196,7 +4366,8 @@ async function enableMotion(){
       () => {
 
         if(
-          motionSamples === 0
+          motionSamples ===
+          0
         ){
 
           motionEnabled =
@@ -5238,17 +4409,14 @@ motionBtn.addEventListener(
 );
 
 
-/*
-  IMAGE FAILURE
-*/
+/* ---------- Safety / resize ---------- */
 
 document
   .querySelectorAll(
     '.quarter-photo'
   )
   .forEach(
-    image => {
-
+    image =>
       image.addEventListener(
         'error',
         () => {
@@ -5257,15 +4425,9 @@ document
             'Could not load the quarter image. Check your connection.';
 
         }
-      );
-
-    }
+      )
   );
 
-
-/*
-  FAILSAFE
-*/
 
 window.addEventListener(
   'error',
@@ -5275,13 +4437,11 @@ window.addEventListener(
       flipping
     ){
 
-      unlockAfterError(
-
+      recover(
         event.error ||
         new Error(
           event.message
         )
-
       );
 
     }
@@ -5298,13 +4458,11 @@ window.addEventListener(
       flipping
     ){
 
-      unlockAfterError(
-
+      recover(
         event.reason ||
         new Error(
           'Unhandled promise rejection'
         )
-
       );
 
     }
@@ -5313,15 +4471,11 @@ window.addEventListener(
 );
 
 
-/*
-  RESIZE / ORIENTATION
-*/
-
 let resizeTimer =
   null;
 
 
-function scheduleStageClamp(){
+function scheduleClamp(){
 
   clearTimeout(
     resizeTimer
@@ -5336,7 +4490,7 @@ function scheduleStageClamp(){
           !flipping
         ){
 
-          clampCoinToStage();
+          clampToStage();
 
         }
 
@@ -5349,7 +4503,7 @@ function scheduleStageClamp(){
 
 window.addEventListener(
   'resize',
-  scheduleStageClamp,
+  scheduleClamp,
   {
     passive:true
   }
@@ -5358,7 +4512,7 @@ window.addEventListener(
 
 window.addEventListener(
   'orientationchange',
-  scheduleStageClamp,
+  scheduleClamp,
   {
     passive:true
   }
@@ -5372,7 +4526,7 @@ if(
   window.visualViewport
     .addEventListener(
       'resize',
-      scheduleStageClamp,
+      scheduleClamp,
       {
         passive:true
       }
@@ -5381,15 +4535,7 @@ if(
 }
 
 
-/*
-  Start downloading audio
-  immediately.
-*/
-
-beginCoinAudioFetch();
-
-
-setRestingPosition();
+setRest();
 
 })();
 </script>
